@@ -70,6 +70,22 @@ Resources:
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic
 
+  PhotoOpsIngestTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: "PhotoOpsIngestTopicPolicy"
+        Version: "2012-10-17"
+        Statement:
+        - Sid: "GlobalWrite"
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action: sns:Publish
+          Resource: !Ref PhotoOpsIngestTopic
+      Topics:
+        - !Ref PhotoOpsIngestTopic
+
 
   EventBridge:
     Type: AWS::Events::EventBus
