@@ -67,14 +67,14 @@ Globals:
 
 
 Resources:
-
   PhotoOpsIngestTopic:
+    Type: AWS::SNS::Topic
 
 
-  PhotoOpsEventBridge:
-
-
-  
+  EventBridge:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: !Sub "${ServiceName}-${ServiceEnv}"
 
 
   DynamoDBTable:
@@ -86,13 +86,13 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "pk"
           AttributeType: "S"
-        #- AttributeName: "sk"
-        #  AttributeType: "S"
+        - AttributeName: "sk"
+          AttributeType: "S"
       KeySchema:
         - AttributeName: "pk"
           KeyType: "HASH"
-        #- AttributeName: "sk"
-        #  KeyType: "RANGE"
+        - AttributeName: "sk"
+          KeyType: "RANGE"
       BillingMode: "PAY_PER_REQUEST"
 
 
@@ -100,31 +100,65 @@ Resources:
     Type: AWS::SNS::Topic
 
 
+  # SSM Parameters
+  PhotoOpsIngestTopicArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/PhotoOpsIngestTopicArn"
+      Type: String
+      Description: "Ingest SNS topic ARN"
+      Value: !Ref PhotoOpsIngestTopic
+
+  DynamoDBTableName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/DynamoDBTableName"
+      Type: String
+      Description: "DDB table name"
+      Value: !Ref DynamoDBTable
+
+  EventBusArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/EventBusArn"
+      Type: String
+      Description: "Event Bus ARN"
+      Value: !GetAtt EventBridge.Arn
+
+  EventBusName:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/EventBusName"
+      Type: String
+      Description: "Event Bus Name"
+      Value: !Ref EventBridge
+
+  CloudWatchTopicArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/CloudWatchTopicArn"
+      Type: String
+      Description: "CloudWatch SNS Topic ARN"
+      Value: !Ref CloudWatchTopic
+
 Outputs:
-
-
-  DynamoDBTableArn:
-    Description: "ARN of DynamoDB table"
-    Value:
-      Fn::GetAtt: DynamoDBTable.Arn
-    Export:
-      Name:
-        Fn::Sub: "${AWS::StackName}-DynamoDBTableArn"
+  PhotoOpsIngestTopicArn:
+    Description: "ARN of PhotoOps Ingest topic ARN"
+    Value: !Ref PhotoOpsIngestTopic
 
   DynamoDBTableName:
     Description: "Name of DynamoDB table"
-    Value:
-      Ref: DynamoDBTable
-    Export:
-      Name:
-        Fn::Sub: "${AWS::StackName}-DynamoDBTableName"
+    Value: !Ref DynamoDBTable
 
+  EventBusArn:
+    Description: "ARN of event bus"
+    Value: !GetAtt EventBridge.Arn
+
+  EventBusName:
+    Description: "Name of event bus"
+    Value: !Ref EventBridge
 
   CloudWatchTopicArn:
     Description: "ARN of CloudWatch topic"
-    Value:
-      Ref: CloudWatchTopic
-    Export:
-      Name:
-        Fn::Sub: "${AWS::StackName}-CloudWatchTopicArn"
+    Value: !Ref CloudWatchTopic
 
