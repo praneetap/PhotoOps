@@ -29,7 +29,7 @@ validate:
 
 deploy: build validate
 	$(info Deploying to personal development stack)
-	sam deploy --stack-name $(STACKNAME) --parameter-overrides ServiceEnv=$(ENV) --region ${AWS_REGION} --resolve-s3
+	sam deploy --stack-name $(STACKNAME) --region ${AWS_REGION} --resolve-s3 --parameter-overrides ServiceEnv=$(ENV)
 
 describe:
 	$(info Describing stack)

@@ -67,6 +67,48 @@ Globals:
 
 
 Resources:
+  IngestPhoto:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Ingest a new photo into PhotoOps"
+      CodeUri: src/handlers/IngestPhoto
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          DDB_TABLE_NAME: !Ref DynamoDBTable
+          EVENT_BRIDGE_NAME: !Ref EventBridge
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn:
+          Fn::GetAtt: IngestPhotoDlqQueue.Arn
+      Events:
+        SnsEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref PhotoOpsIngestTopic
+      Policies:
+        - Statement:
+          - Effect: "Allow"
+            Action:
+              - "ssm:GetParameter"
+            Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ServiceName}/${ServiceEnv}/*"
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+            Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: "Allow"
+            Action:
+              - "events:PutEvents"
+            Resource: !GetAtt EventBridge.Arn
+
+  IngestPhotoDlqQueue:
+    Type: AWS::SQS::Queue
+
+
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic
 

@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1::ExampleTopic",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:ExampleTopic",
+        "Subject": "Amazon S3 Notification",
+        "Message": "{\"Records\": [{\"eventVersion\": \"2.1\", \"eventSource\": \"aws:s3\", \"awsRegion\": \"us-east-1\", \"eventTime\": \"2020-12-25T23:01:10.388Z\", \"eventName\": \"ObjectCreated:CompleteMultipartUpload\", \"userIdentity\": {\"principalId\": \"AWS:AIDAJI3EBWAEQXHFFWNPC\"}, \"requestParameters\": {\"sourceIPAddress\": \"73.219.232.57\"}, \"responseElements\": {\"x-amz-request-id\": \"D50D70DA5C97FD79\", \"x-amz-id-2\": \"JHC+yXluxpc1EKWmkhL3vxV8vaZb+0KfMQD1bcnrQBh79B5O5IbvNEN4vBVtN1fa/tlyjUywTQ+Q3raSjvn8/jNfwf9I9Jgy\"}, \"s3\": {\"s3SchemaVersion\": \"1.0\", \"configurationId\": \"4c6333ce-a4f2-40a6-919a-24f9d127d176\", \"bucket\": {\"name\": \"photoopsai-bucket\", \"ownerIdentity\": {\"principalId\": \"A3X7LLF2COQ77\"}, \"arn\": \"arn:aws:s3:::photoopsai-bucket\"}, \"object\": {\"key\": \"images/example.raw\", \"size\": 24190458, \"eTag\": \"a235d28b719a0497fc43d9b7c266e2e0-3\", \"sequencer\": \"005FE66F297EFF0472\"}}}]}",
+        "Timestamp": "1970-01-01T00:00:00.000Z",
+        "SignatureVersion": "1",
+        "Signature": "EXAMPLE",
+        "SigningCertUrl": "EXAMPLE",
+        "UnsubscribeUrl": "EXAMPLE",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
