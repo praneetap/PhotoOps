@@ -1,0 +1,21 @@
+{
+  "$schema": "PhotoData.schema.json",
+  "type": "object",
+  "properties": {
+    "pk": {
+      "type": "string"
+    },
+    "sk": {
+      "type": "string"
+    },
+    "ttl": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "pk",
+    "sk",
+    "exif",
+    "location"
+  ]
+}

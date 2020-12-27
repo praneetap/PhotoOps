@@ -1,0 +1,12 @@
+{
+  "location": {
+    "bucket": "my-bucket",
+    "key": "object/key"
+  },
+  "exif": {
+    "image": {},
+    "exif": {},
+    "gps": {},
+    "maker_note": {}
+  }
+}

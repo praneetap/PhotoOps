@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "Records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "EventSource": {
+            "type": "string"
+          },
+          "EventVersion": {
+            "type": "string"
+          },
+          "EventSubscriptionArn": {
+            "type": "string"
+          },
+          "Sns": {
+            "type": "object",
+            "properties": {
+              "Type": {
+                "type": "string"
+              },
+              "MessageId": {
+                "type": "string"
+              },
+              "TopicArn": {
+                "type": "string"
+              },
+              "Subject": {
+                "type": "string"
+              },
+              "Message": {
+                "type": "string"
+              },
+              "Timestamp": {
+                "type": "string"
+              },
+              "SignatureVersion": {
+                "type": "string"
+              },
+              "Signature": {
+                "type": "string"
+              },
+              "SigningCertUrl": {
+                "type": "string"
+              },
+              "UnsubscribeUrl": {
+                "type": "string"
+              },
+              "MessageAttributes": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "Message",
+              "MessageAttributes",
+              "MessageId",
+              "Signature",
+              "SignatureVersion",
+              "SigningCertUrl",
+              "Subject",
+              "Timestamp",
+              "TopicArn",
+              "Type",
+              "UnsubscribeUrl"
+            ]
+          }
+        },
+        "required": [
+          "EventSource",
+          "EventSubscriptionArn",
+          "EventVersion",
+          "Sns"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Records"
+  ]
+}

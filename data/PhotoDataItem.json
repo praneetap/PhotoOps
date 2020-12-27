@@ -1,0 +1,15 @@
+{
+  "pk": "PHOTO#my-bucket#object/key",
+  "sk": "1609088044",
+  "ttl": "1640624044",
+  "location": {
+    "bucket": "my-bucket",
+    "key": "object/key"
+  },
+  "exif": {
+    "image": {},
+    "exif": {},
+    "gps": {},
+    "maker_note": {}
+  }
+}

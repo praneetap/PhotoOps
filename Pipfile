@@ -9,6 +9,10 @@ python_version = "3.8"
 [packages]
 common = {editable = true, path = "src/common"}
 aws-xray-sdk = "*"
+pillow = "*"
+rawpy = "*"
+exifread = "*"
+aws-lambda-powertools = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -22,6 +26,8 @@ pytest-mock = "*"
 pytest-pylint = "*"
 tox = "*"
 cfn-lint = "*"
+genson = "*"
+jsonschema = "*"
 
 [scripts]
 #install-lambda-functions = "pipenv install -r src/requirements.txt"

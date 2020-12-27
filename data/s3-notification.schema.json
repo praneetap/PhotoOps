@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "S3Notification",
+  "type": "object",
+  "properties": {
+    "Records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "eventVersion": {
+            "type": "string"
+          },
+          "eventSource": {
+            "type": "string"
+          },
+          "awsRegion": {
+            "type": "string"
+          },
+          "eventTime": {
+            "type": "string"
+          },
+          "eventName": {
+            "type": "string"
+          },
+          "userIdentity": {
+            "type": "object",
+            "properties": {
+              "principalId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "principalId"
+            ]
+          },
+          "requestParameters": {
+            "type": "object",
+            "properties": {
+              "sourceIPAddress": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sourceIPAddress"
+            ]
+          },
+          "responseElements": {
+            "type": "object",
+            "properties": {
+              "x-amz-request-id": {
+                "type": "string"
+              },
+              "x-amz-id-2": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "x-amz-id-2",
+              "x-amz-request-id"
+            ]
+          },
+          "s3": {
+            "type": "object",
+            "properties": {
+              "s3SchemaVersion": {
+                "type": "string"
+              },
+              "configurationId": {
+                "type": "string"
+              },
+              "bucket": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ownerIdentity": {
+                    "type": "object",
+                    "properties": {
+                      "principalId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "principalId"
+                    ]
+                  },
+                  "arn": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "arn",
+                  "name",
+                  "ownerIdentity"
+                ]
+              },
+              "object": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "integer"
+                  },
+                  "eTag": {
+                    "type": "string"
+                  },
+                  "sequencer": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "sequencer"
+                ]
+              }
+            },
+            "required": [
+              "bucket",
+              "configurationId",
+              "object",
+              "s3SchemaVersion"
+            ]
+          }
+        },
+        "required": [
+          "awsRegion",
+          "eventName",
+          "eventSource",
+          "eventTime",
+          "eventVersion",
+          "requestParameters",
+          "responseElements",
+          "s3",
+          "userIdentity"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Records"
+  ]
+}

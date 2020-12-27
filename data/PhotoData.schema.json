@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "location": {
+      "type": "object",
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "key"
+      ]
+    },
+    "exif": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object"
+        },
+        "exif": {
+          "type": "object"
+        },
+        "gps": {
+          "type": "object"
+        },
+        "maker_note": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "exif",
+        "gps",
+        "image",
+        "maker_note"
+      ]
+    }
+  },
+  "required": [
+    "exif",
+    "location"
+  ]
+}
