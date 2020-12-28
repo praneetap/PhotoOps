@@ -1,14 +1,12 @@
 {
-  "pk": "PHOTO#my-bucket#object/key",
-  "sk": "1609088044",
-  "ttl": "1640624044",
   "location": {
     "bucket": "my-bucket",
     "key": "object/key"
   },
-  "exif": {
+  "size": 24017002,
+  ""exif": {
     "image": {},
-    "exif": {},
+    "exif_data": {},
     "gps": {},
     "maker_note": {}
   }

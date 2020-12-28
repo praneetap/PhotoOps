@@ -17,7 +17,7 @@
         "key"
       ]
     },
-    "exif": {
+    "exif_data": {
       "type": "object",
       "properties": {
         "image": {
@@ -42,7 +42,7 @@
     }
   },
   "required": [
-    "exif",
+    "exif_data",
     "location"
   ]
 }
