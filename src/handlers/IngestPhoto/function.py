@@ -1,14 +1,12 @@
 '''Ingest a new photo into PhotoOps'''
 import json
 import logging
-import io
 import os
 
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, Optional, Union
 
 import boto3
-import exifread
 from aws_lambda_powertools.utilities.data_classes import SNSEvent
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
@@ -35,10 +33,8 @@ class PhotoData:
 
     file_name: str
     file_suffix: Union[str, None]
-    file_type: str
     size: int
-    is_raw: bool
-    exif_data: Dict[str, Any]
+    metadata_processed: bool
 
     @dataclass
     class S3Location:
@@ -71,7 +67,7 @@ class Response:
 def _get_photo_data(s3_notification: Dict[str, Any]) -> PhotoData:
     '''Create a PhotoData item from gathered data'''
     s3_location = _get_s3_object_location(s3_notification)
-    # FIXME: Fails if no suffic which we can't actually guarnetee
+    # FIXME: Can't assume a single '.' in file.
     file_name, *tmp_file_suffix = os.path.basename(s3_location.key).split('.')
     file_suffix = tmp_file_suffix[0] or None
     size = s3_notification['Records'][0]['s3']['object']['size'] or 0  # Making mypy happy
@@ -81,26 +77,8 @@ def _get_photo_data(s3_notification: Dict[str, Any]) -> PhotoData:
         file_suffix=file_suffix,
         location=s3_location,
         size=size,
-        is_raw=True,
-        file_type='NEF',
-        exif_data={}
+        metadata_processed=False
     )
-
-
-def _get_object_exif_data(s3_location: PhotoData.S3Location) -> Dict[str, Any]:
-    '''Fetch object and return its exif data'''
-    bytes_buffer = io.BytesIO()
-
-    S3_CLIENT.download_fileobj(
-        Bucket=s3_location.bucket,
-        Key=s3_location.key,
-        Fileobj=bytes_buffer
-    )
-
-    e = exifread.process_file(bytes_buffer, truncate_tags=False)
-    print('efix: {0}'.format(e))
-
-    return e
 
 
 def _get_s3_object_location(s3_notification: Dict[str, Any]) -> PhotoData.S3Location:

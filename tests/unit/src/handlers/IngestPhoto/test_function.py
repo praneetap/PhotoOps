@@ -150,8 +150,20 @@ def test_handler(event, s3_notification_from_event, S3_CLIENT, DDB_TABLE, mocker
     _put_s3_object(s3_location, S3_CLIENT, image_file)
 
     resp = func.handler(event, {})
+    file_name, *tmp_file_suffix = os.path.basename(s3_location.key).split('.')
+
+    assert isinstance(resp.photo_data, func.PhotoData)
+    assert resp.photo_data.file_name == file_name
+    assert resp.photo_data.file_suffix == tmp_file_suffix[0]
+    assert isinstance(resp.photo_data.size, int)
+    assert resp.photo_data.metadata_processed is False
+    assert resp.photo_data.location.bucket == s3_location.bucket
+    assert resp.photo_data.location.key == s3_location.key
+
+    assert resp.ddb_response.get('ResponseMetadata').get('HTTPStatusCode') == 200
 
 
+@pytest.mark.skip(reason='Need to write')
 def test_handler_unexpected_event(unexpected_event):
     '''Call handler with unexpected event data'''
     pass

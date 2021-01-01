@@ -3,5 +3,3 @@
 
 aws_lambda_powertools
 boto3
-exifread
-rawpy
