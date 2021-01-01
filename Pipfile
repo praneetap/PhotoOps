@@ -11,7 +11,7 @@ common = {editable = true, path = "src/common"}
 aws-xray-sdk = "*"
 pillow = "*"
 rawpy = "*"
-exifread = "*"
+exifread = {editable = true, ref = "e0e408ff58cf621ef647588ea6c3871bfd010230", git = "https://github.com/ianare/exif-py.git"}
 aws-lambda-powertools = "*"
 
 [dev-packages]
@@ -28,6 +28,7 @@ tox = "*"
 cfn-lint = "*"
 genson = "*"
 jsonschema = "*"
+json2python-models = "*"
 
 [scripts]
 #install-lambda-functions = "pipenv install -r src/requirements.txt"
