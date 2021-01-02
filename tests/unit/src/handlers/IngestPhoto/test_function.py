@@ -5,6 +5,8 @@
 import json
 import os
 
+from datetime import datetime
+
 import boto3
 import moto
 import pytest
@@ -149,6 +151,10 @@ def test_handler(event, s3_notification_from_event, S3_CLIENT, DDB_TABLE, mocker
     _create_s3_bucket(s3_location, S3_CLIENT)
     _put_s3_object(s3_location, S3_CLIENT, image_file)
 
+    event_datetime = datetime.strptime(
+        s3_notification_from_event['Records'][0]['eventTime'], '%Y-%m-%dT%H:%M:%S.%fZ'
+    )
+
     resp = func.handler(event, {})
     file_name, *tmp_file_suffix = os.path.basename(s3_location.key).split('.')
 
@@ -160,7 +166,10 @@ def test_handler(event, s3_notification_from_event, S3_CLIENT, DDB_TABLE, mocker
     assert resp.photo_data.location.bucket == s3_location.bucket
     assert resp.photo_data.location.key == s3_location.key
 
-    assert resp.ddb_response.get('ResponseMetadata').get('HTTPStatusCode') == 200
+    assert resp.ddb.response.get('ResponseMetadata').get('HTTPStatusCode') == 200
+    assert resp.ddb.item.pk == 'PHOTO#{0}#{1}'.format(s3_location.bucket, s3_location.key)
+    assert resp.ddb.item.sk == 'EVENT_TIME#{0}'.format(event_datetime)
+
 
 
 @pytest.mark.skip(reason='Need to write')

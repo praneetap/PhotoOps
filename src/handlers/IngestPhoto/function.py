@@ -1,10 +1,12 @@
 '''Ingest a new photo into PhotoOps'''
+
 import json
 import logging
 import os
 
 from dataclasses import dataclass, asdict
-from typing import Any, Dict, Optional, Union
+from datetime import datetime
+from typing import Any, Dict, Optional, Tuple, Union
 
 import boto3
 from aws_lambda_powertools.utilities.data_classes import SNSEvent
@@ -61,7 +63,22 @@ class PhotoDataItem(PhotoData):
 class Response:
     '''Function Response'''
     photo_data: PhotoData
-    ddb_response: PutItemOutputTypeDef
+
+    @dataclass
+    class Ddb:
+        '''DDB data'''
+        item: PhotoDataItem
+        response: PutItemOutputTypeDef
+    ddb: Ddb
+
+
+def _get_event_date_time(s3_notification: Dict[str, Any]) -> datetime:
+    '''Get event date / time'''
+    event_time_string = s3_notification['Records'][0]['eventTime'] or '0'  # Making mypy happy
+    # NOTE: Amazon will use three digit microseconds but Python uses six
+    # digits with 0 padding on the right.
+    d = datetime.strptime(event_time_string, '%Y-%m-%dT%H:%M:%S.%fZ')
+    return d
 
 
 def _get_photo_data(s3_notification: Dict[str, Any]) -> PhotoData:
@@ -89,11 +106,14 @@ def _get_s3_object_location(s3_notification: Dict[str, Any]) -> PhotoData.S3Loca
     return PhotoData.S3Location(s3_bucket, s3_key)
 
 
-def _write_photo_data_item(photo_data: PhotoData) -> PutItemOutputTypeDef:
+def _write_photo_data_item(
+    photo_data: PhotoData,
+    event_time: datetime
+) -> Tuple[PhotoDataItem, PutItemOutputTypeDef]:
     '''Write photo to DDB'''
     pk = 'PHOTO#{0}#{1}'.format(photo_data.location.bucket, photo_data.location.key)
-    # FIXME: revisit what sort key should be.
-    sk = 'v0'
+    # NOTE: Still not sure this is what I want but going with it for now.
+    sk = 'EVENT_TIME#{0}'.format(event_time)
 
     photo_data_item = PhotoDataItem(
         pk=pk,
@@ -105,16 +125,20 @@ def _write_photo_data_item(photo_data: PhotoData) -> PutItemOutputTypeDef:
         Item=asdict(photo_data_item)
     )
 
-    return response
+    return (photo_data_item, response)
 
 
 def _ingest_photo(s3_notification: Dict[str, Any]) -> Response:
     photo_data = _get_photo_data(s3_notification)
-    ddb_response = _write_photo_data_item(photo_data)
+    event_time = _get_event_date_time(s3_notification)
+    ddb_item, ddb_response = _write_photo_data_item(photo_data, event_time)
 
     return Response(
         photo_data=photo_data,
-        ddb_response=ddb_response
+        ddb=Response.Ddb(
+            item=ddb_item,
+            response=ddb_response
+        )
     )
 
 
