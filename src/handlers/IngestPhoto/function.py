@@ -26,8 +26,6 @@ _logger = logging.getLogger(__name__)
 DDB = boto3.resource('dynamodb')
 DDB_TABLE = DDB.Table(os.environ.get('DDB_TABLE_NAME', ''))
 
-S3_CLIENT = boto3.client("s3")
-
 
 @dataclass
 class Response:
