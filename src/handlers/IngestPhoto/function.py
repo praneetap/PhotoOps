@@ -12,6 +12,8 @@ import boto3
 from aws_lambda_powertools.utilities.data_classes import SNSEvent
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
+from mypy_boto3_dynamodb import DynamoDBServiceResource
+from mypy_boto3_dynamodb.service_resource import Table
 from mypy_boto3_dynamodb.type_defs import PutItemOutputTypeDef
 
 # This path reflects the packaged path and not repo path to the common
@@ -23,8 +25,8 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
 
-DDB = boto3.resource('dynamodb')
-DDB_TABLE = DDB.Table(os.environ.get('DDB_TABLE_NAME', ''))
+DDB: DynamoDBServiceResource = boto3.resource('dynamodb')
+DDB_TABLE: Table = DDB.Table(os.environ.get('DDB_TABLE_NAME', ''))
 
 
 @dataclass
