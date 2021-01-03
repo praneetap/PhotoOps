@@ -6,7 +6,7 @@ import os
 
 from dataclasses import dataclass, asdict
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import boto3
 from aws_lambda_powertools.utilities.data_classes import SNSEvent
@@ -16,7 +16,7 @@ from mypy_boto3_dynamodb.type_defs import PutItemOutputTypeDef
 
 # This path reflects the packaged path and not repo path to the common
 # package for this service.
-import common   # pylint: disable=unused-import
+from common import PhotoData, PhotoDataItem
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -27,36 +27,6 @@ DDB = boto3.resource('dynamodb')
 DDB_TABLE = DDB.Table(os.environ.get('DDB_TABLE_NAME', ''))
 
 S3_CLIENT = boto3.client("s3")
-
-
-@dataclass
-class PhotoData:
-    '''PhotoData data'''
-
-    file_name: str
-    file_suffix: Union[str, None]
-    size: int
-    metadata_processed: bool
-
-    @dataclass
-    class S3Location:
-        '''Image S3 location'''
-        bucket: str
-        key: str
-
-    location: S3Location
-
-
-@dataclass
-class PhotoDataItem(PhotoData):
-    '''PhotoData DDB Item'''
-    pk: str
-    sk: str
-    ttl: Optional[Union[int, None]] = None
-
-    def __post_init__(self):
-        if self.ttl is None:
-            del self.ttl
 
 
 @dataclass
