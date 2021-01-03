@@ -3,3 +3,4 @@
 
 aws_lambda_powertools
 boto3
+mypy_boto3_dynamodb
