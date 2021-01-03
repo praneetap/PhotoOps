@@ -17,6 +17,25 @@
         "key"
       ]
     },
+    "jpeg_location": {
+      "type": "object",
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "expiration": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "bucket",
+        "key",
+        "expiration"
+      ]
+    },
     "exif_data": {
       "type": "object",
       "properties": {

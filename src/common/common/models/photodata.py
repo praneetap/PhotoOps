@@ -1,6 +1,7 @@
 '''PhotoOpsAI photo data'''
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Union
 
 
@@ -21,3 +22,11 @@ class PhotoData:
 
     location: S3Location
 
+    @dataclass
+    class JpegLocation:
+        '''JPEG cached image'''
+        bucket: str
+        key: str
+        expiration: datetime
+
+    jpeg_location: JpegLocation

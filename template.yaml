@@ -109,6 +109,61 @@ Resources:
     Type: AWS::SQS::Queue
 
 
+  CreateJpeg:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Create JPEG image for cache"
+      CodeUri: src/handlers/CreateJpeg
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      Environment:
+        Variables:
+          DDB_TABLE_NAME: !Ref DynamoDBTable
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn:
+          Fn::GetAtt: CreateJpegDlqQueue.Arn
+      Events:
+        EventBridge:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !GetAtt EventBridge.Name
+            Pattern:
+              detail-type:
+                - !Ref CreateJpeg
+      Policies:
+        - Statement:
+          - Effect: "Allow"
+            Action:
+              - "ssm:GetParameter"
+            Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ServiceName}/${ServiceEnv}/*"
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:UpdateItem"
+            Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: "Allow"
+            Action:
+              - "s3:PutObject"
+            Resource: !GetAtt JpegCacheBucket.Arn
+
+  CreateJpegDlqQueue:
+    Type: AWS::SQS::Queue
+
+  JpegCacheBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      # NOTE: We set a shorter expiration time in CreateJpeg. This is just
+      # here as an added insurance policy.
+      #
+      # FIXME: On the event of an object expiration time and bucket lifecycle
+      # rule, who wins?
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 90
+            Status: Enabled
+
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic
 
