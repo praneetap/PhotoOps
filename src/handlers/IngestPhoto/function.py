@@ -64,7 +64,6 @@ def _get_photo_data(s3_notification: Dict[str, Any]) -> PhotoData:
         file_suffix=file_suffix,
         location=s3_location,
         size=size,
-        metadata_processed=False
     )
 
 
