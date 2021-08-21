@@ -1,0 +1,19 @@
+{
+  "pk": "PHOTO#MyBucket#path/to/test_image_nikon.NEF",
+  "sk", "2020-01-16T18:27:42.0000",
+  "ttl": null,
+  "file_name": "test_image_nikon",
+  "file_suffix": "NEF",
+  "size": 1,
+  "location": {
+    "bucket": "MyBucket",
+    "key": "path/to/test_image_nikon.NEF"
+  },
+  "image_data": {
+    "size": {
+      "height": "3728",
+      "width": "5600"
+    },
+    "color_space": "RGB"
+  }
+}

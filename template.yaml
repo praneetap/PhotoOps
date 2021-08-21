@@ -121,18 +121,14 @@ Resources:
       Environment:
         Variables:
           DDB_TABLE_NAME: !Ref DynamoDBTable
+          JPEG_CACHE_BUCKET: !Ref JpegCacheBucket
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn:
           Fn::GetAtt: CreateJpegDlqQueue.Arn
-      Events:
-        EventBridge:
-          Type: EventBridgeRule
-          Properties:
-            EventBusName: !GetAtt EventBridge.Name
-            Pattern:
-              detail-type:
-                - !Ref CreateJpeg
+      # FIXME: We have no trigger events because it's intended to be a part of
+      # Step Function state machine. However we are creating a cross service
+      # boundary dependency which really bothers me.
       Policies:
         - Statement:
           - Effect: "Allow"
