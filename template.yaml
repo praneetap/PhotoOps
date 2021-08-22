@@ -122,7 +122,7 @@ Resources:
   EventBusLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub "/aws/eventbus/${EventBus}/all"
+      LogGroupName: !Sub "/aws/events/${EventBus}/all"
       RetentionInDays: 7
 
   EventBusLogGroupRule:
@@ -136,6 +136,44 @@ Resources:
       Targets:
         - Arn: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${EventBusLogGroup}"
           Id: "EventBusLogGroup"
+
+
+  # Grant eventBus ability to deliver logs to CW.
+  #
+  # ref: https://github.com/aws-cloudformation/cloudformation-coverage-roadmap/issues/351#issuecomment-887045751
+  LogGroupForEventsPolicy:
+    Type: AWS::Logs::ResourcePolicy
+    Properties:
+      PolicyName: EventBridgeToCWLogsPolicy
+      PolicyDocument: !Sub
+        - >
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "EventBridgetoCWLogsPolicy",
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": [
+                    "delivery.logs.amazonaws.com",
+                    "events.amazonaws.com"
+                  ]
+                },
+                "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": [
+                  "${logArn}"
+                ],
+                "Condition": {
+                  "ArnEquals": {"aws:SourceArn": "${ruleArn}"}
+                }
+              }
+            ]
+          }
+        - { logArn: !GetAtt EventBusLogGroup.Arn, ruleArn:  !GetAtt EventBusLogGroupRule.Arn}
+
 
 
   DynamoDBTable:
