@@ -134,8 +134,8 @@ Resources:
         account:
           - !Ref AWS::AccountId
       Targets:
-        - Arn: !GetAtt EventBusLogGroup.Arn
-          Id: EventBusLogGroup
+        - Arn: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${EventBusLogGroup}"
+          Id: "EventBusLogGroup"
 
 
   DynamoDBTable:
