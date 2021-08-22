@@ -34,6 +34,16 @@ PhotoOpsAI central application platform
                 └── __init__.py
 ```
 
+## References
+
+* https://www.media.mit.edu/pia/Research/deepview/exif.html
+* http://lclevy.free.fr/nef/index.html
+* https://exiftool.org/TagNames/EXIF.html
+* https://exiftool.org/TagNames/Nikon.html
+* https://www.exiv2.org/tags-nikon.html
+* https://github.com/LibRaw/LibRaw/blob/master/src/metadata/nikon.cpp
+* http://exif.regex.info/exif.cgi
+
 ## Requirements
 
 * AWS CLI with Administrator permission
