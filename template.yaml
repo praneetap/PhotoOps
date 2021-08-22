@@ -67,47 +67,28 @@ Globals:
 
 
 Resources:
-  IngestPhoto:
+  IngestS3Event:
     Type: AWS::Serverless::Function
     Properties:
-      Description: "Ingest a new photo into PhotoOps"
-      CodeUri: src/handlers/IngestPhoto
+      Description: "Ingest an S3 event"
+      CodeUri: src/handlers/IngestS3Event
       Handler: function.handler
       Runtime: python3.8
       MemorySize: 128
-      Timeout: 10
-      Environment:
-        Variables:
-          DDB_TABLE_NAME: !Ref DynamoDBTable
-          EVENT_BRIDGE_NAME: !Ref EventBridge
+      Timeout: 3
       DeadLetterQueue:
         Type: 'SQS'
-        TargetArn:
-          Fn::GetAtt: IngestPhotoDlqQueue.Arn
+        TargetArn: !GetAtt IngestS3EventDlqQueue.Arn
       Events:
         SnsEvent:
           Type: SNS
           Properties:
             Topic: !Ref PhotoOpsIngestTopic
-      Policies:
-        - Statement:
-          - Effect: "Allow"
-            Action:
-              - "ssm:GetParameter"
-            Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ServiceName}/${ServiceEnv}/*"
-          - Effect: "Allow"
-            Action:
-              - "dynamodb:PutItem"
-              - "dynamodb:UpdateItem"
-            Resource: !GetAtt DynamoDBTable.Arn
-          - Effect: "Allow"
-            Action:
-              - "events:PutEvents"
-            Resource: !GetAtt EventBridge.Arn
-
-  IngestPhotoDlqQueue:
-    Type: AWS::SQS::Queue
-
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
 
   IngestS3EventDlqQueue:
     Type: AWS::SQS::Queue
@@ -133,10 +114,28 @@ Resources:
         - !Ref PhotoOpsIngestTopic
 
 
-  EventBridge:
+  EventBus:
     Type: AWS::Events::EventBus
     Properties:
       Name: !Sub "${ServiceName}-${ServiceEnv}"
+
+  EventBusLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/eventbus/${EventBus}/all"
+      RetentionInDays: 7
+
+  EventBusLogGroupRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Log all events to CloudWatch"
+      EventBusName: !Ref EventBus
+      EventPattern:
+        account:
+          - !Ref AWS::AccountId
+      Targets:
+        - Arn: !GetAtt EventBusLogGroup.Arn
+          Id: EventBusLogGroup
 
 
   DynamoDBTable:
@@ -161,6 +160,7 @@ Resources:
       BillingMode: "PAY_PER_REQUEST"
 
 
+  # For CloudWatch Alarms
   CloudWatchTopic:
     Type: AWS::SNS::Topic
 
@@ -188,7 +188,7 @@ Resources:
       Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/EventBusArn"
       Type: String
       Description: "Event Bus ARN"
-      Value: !GetAtt EventBridge.Arn
+      Value: !GetAtt EventBus.Arn
 
   EventBusName:
     Type: AWS::SSM::Parameter
@@ -196,7 +196,7 @@ Resources:
       Name: !Sub "/PhotoOpsAI/${ServiceName}/${ServiceEnv}/EventBusName"
       Type: String
       Description: "Event Bus Name"
-      Value: !Ref EventBridge
+      Value: !Ref EventBus
 
   CloudWatchTopicArn:
     Type: AWS::SSM::Parameter
@@ -217,11 +217,11 @@ Outputs:
 
   EventBusArn:
     Description: "ARN of event bus"
-    Value: !GetAtt EventBridge.Arn
+    Value: !GetAtt EventBus.Arn
 
   EventBusName:
     Description: "Name of event bus"
-    Value: !Ref EventBridge
+    Value: !Ref EventBus
 
   CloudWatchTopicArn:
     Description: "ARN of CloudWatch topic"

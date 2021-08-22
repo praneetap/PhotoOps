@@ -7,7 +7,6 @@ import os
 
 import jsonschema
 import pytest
-from aws_lambda_powertools.utilities.data_classes import SNSEvent
 
 DATA_DIR = './data'
 EVENT_DIR = os.path.join(DATA_DIR, 'events')
@@ -15,39 +14,25 @@ IMAGE_DIR = os.path.join(DATA_DIR, 'images')
 MODEL_DIR = os.path.join(DATA_DIR, 'models')
 
 
-@pytest.fixture(params=['IngestPhoto-event-put.json'])
-def event(request):
+@pytest.fixture()
+def event():
     '''Return a test event'''
-    with open(os.path.join(EVENT_DIR, request.param)) as f:
-        return json.load(f)
-
-
-@pytest.fixture(params=['IngestPhoto-event-delete.json'])
-def unexpected_event(request):
-    '''Return a test event'''
-    with open(os.path.join(EVENT_DIR, request.param)) as f:
+    with open(os.path.join(EVENT_DIR, 'IngestS3Event-event-sns.json')) as f:
         return json.load(f)
 
 
 @pytest.fixture()
-def event_schema():
-    '''Return an event schema'''
+def sns_event_schema():
+    '''Return an SNS event schema'''
     with open(os.path.join(EVENT_DIR, 'lambda-sns-event.schema.json')) as f:
         return json.load(f)
 
 
-@pytest.fixture()
-def s3_notification():
+@pytest.fixture(params=['IngestS3Event-data-delete.json', 'IngestS3Event-data-put.json'])
+def s3_notification(request):
     '''Return an S3 notification'''
-    with open(os.path.join(EVENT_DIR, 'IngestPhoto-msg-put.json')) as f:
+    with open(os.path.join(EVENT_DIR, request.param)) as f:
         return json.load(f)
-
-
-@pytest.fixture()
-def s3_notification_from_event(event):
-    '''Return an S3 notification'''
-    sns_event = SNSEvent(event)
-    return json.loads(sns_event.sns_message)
 
 
 @pytest.fixture()
@@ -58,25 +43,14 @@ def s3_notification_schema():
 
 
 # Data validation
-def test_validate_event_data(event, event_schema):
+def test_validate_sns_event_data(event, sns_event_schema):
     '''Test event data against schema'''
-    jsonschema.validate(event, event_schema)
-
-
-# FIXME: We should actually be throwing and catching an error.
-def test_validate_unexpected_event_data(unexpected_event, event_schema):
-    '''Test unexepcted event data against schema'''
-    jsonschema.validate(unexpected_event, event_schema)
+    jsonschema.validate(event, sns_event_schema)
 
 
 def test_validate_s3_notification_data(s3_notification, s3_notification_schema):
     '''Test event data against schema'''
     jsonschema.validate(s3_notification, s3_notification_schema)
-
-
-def test_validate_s3_notification_from_event_data(s3_notification_from_event, s3_notification_schema):
-    '''Test event data against schema'''
-    jsonschema.validate(s3_notification_from_event, s3_notification_schema)
 
 
 @pytest.mark.skip(reason='Not yet written')
