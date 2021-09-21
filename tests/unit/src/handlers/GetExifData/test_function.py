@@ -34,10 +34,18 @@ def exif_data(request):
     with open(os.path.join(EVENT_DIR, request.param)) as f:
         return json.load(f)
 
+### AWS clients
+@pytest.fixture()
+def aws_credentials():
+    '''Mock credentials to prevent accidentally escaping our mock'''
+    os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
+    os.environ['AWS_SECURITY_TOKEN'] = 'testing'
+    os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
 @moto.mock_s3
 @pytest.fixture()
-def s3_client():
+def s3_client(aws_credentials):
     '''S3 client fixture'''
     return boto3.client('s3')
 
