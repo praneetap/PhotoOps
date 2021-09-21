@@ -6,6 +6,7 @@ import json
 import os
 
 import boto3
+import exifread
 import moto
 import pytest
 
@@ -21,18 +22,59 @@ def event(request):
     with open(os.path.join(EVENT_DIR, request.param)) as f:
         return json.load(f)
 
+
+@pytest.fixture(params=[
+    'test_image_nikon.NEF',
+    'test_image_nikon.dng',
+    'test_image_nikon_embedded_raw.dng',
+    'test_image_nikon.tif',
+])
+def image(request):
+    '''Return an image file object'''
+    return open(os.path.join(IMAGE_DIR, request.param), 'rb')
+
+
 @pytest.fixture()
-def event_schema():
-    '''Return an event schema'''
-    with open(os.path.join(EVENT_DIR, 's3-notification.schema.json')) as f:
-        return json.load(f)
+def exif_data(image):
+    '''Return EXIF data for an image'''
+    image.seek(0)
+    hdr = exifread.ExifHeader(image)
+    exif_data = hdr.dump_tag_values()
+    # MakerNote data can be big
+    if exif_data.get('IFD0') is not None:
+        if exif_data.get('IFD0').get('EXIF') is not None:
+            if exif_data.get('IFD0').get('EXIF').get('MakerNote') is not None:
+                del exif_data['IFD0']['EXIF']['MakerNote']
+    return exif_data
 
 
-@pytest.fixture(params=['GetExifData-output.json'])
-def exif_data(request):
-    '''Return EFIX data'''
-    with open(os.path.join(EVENT_DIR, request.param)) as f:
-        return json.load(f)
+@pytest.fixture()
+def s3_bucket_name(event):
+    '''S3 bucket name'''
+    return event['Records'][0]['s3']['bucket']['name']
+
+
+@pytest.fixture()
+def s3_object_key(event):
+    '''S3 bucket name'''
+    return event['Records'][0]['s3']['object']['key']
+
+
+@pytest.fixture()
+def item(exif_data, s3_bucket_name, s3_object_key):
+    '''Return DDB item'''
+    item = {
+        'pk': '{}#{}'.format(s3_bucket_name, s3_object_key),
+        'sk': 'exif#v0',
+        'Exif': exif_data
+    }
+    return item
+
+
+@pytest.fixture()
+def expected_response(item):
+    '''Expected function response'''
+    return {'Item': item}
 
 ### AWS clients
 @pytest.fixture()
@@ -43,11 +85,13 @@ def aws_credentials():
     os.environ['AWS_SECURITY_TOKEN'] = 'testing'
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
+
 @moto.mock_s3
 @pytest.fixture()
 def s3_client(aws_credentials):
     '''S3 client fixture'''
     return boto3.client('s3')
+
 
 @pytest.fixture()
 def func(s3_client):
@@ -59,23 +103,18 @@ def func(s3_client):
     import src.handlers.GetExifData.function as func
     return func
 
+
 ### Tests
 @moto.mock_s3
-def test_handler(event, exif_data, s3_client, func, mocker):
+def test_handler(event, image, item, expected_response, s3_client, s3_bucket_name, s3_object_key, func, mocker):
     '''Call handler'''
-    s3_bucket_name = event['Records'][0]['s3']['bucket']['name']
-    s3_object_key = event['Records'][0]['s3']['object']['key']
-
-    exif_data['Item']['pk'] = '{}#{}'.format(s3_bucket_name, s3_object_key)
-    exif_data['Item']['sk'] = 'exif#v0'
-
     s3_client.create_bucket(Bucket=s3_bucket_name)
 
-    # FIXME: How do we handle pictures?
-    with open('../../../../Pictures/Lightroom Photos/2021/09/13/_DSC0252.NEF', 'rb') as f:
-        s3_client.upload_fileobj(f, s3_bucket_name, s3_object_key)
-        f.seek(0)
+    # FIXME: How do we handle pictures
+    image.seek(0)
+    s3_client.upload_fileobj(image, s3_bucket_name, s3_object_key)
+    image.seek(0)
 
     resp = func.handler(event, {})
-    assert resp == exif_data
+    assert resp == expected_response
 
