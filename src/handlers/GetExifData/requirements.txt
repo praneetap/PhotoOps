@@ -1,0 +1,6 @@
+# This must be specified from the root of the project for SAM
+-e src/common/
+
+aws_lambda_powertools
+boto3
+git+https://github.com/ServerlessOpsIO/exif-py@feature/exifheader-changes#egg=exifread

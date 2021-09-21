@@ -11,8 +11,9 @@ common = {editable = true, path = "src/common"}
 aws-xray-sdk = "*"
 pillow = "*"
 rawpy = "*"
-exifread = {editable = true, ref = "e0e408ff58cf621ef647588ea6c3871bfd010230", git = "https://github.com/ianare/exif-py.git"}
 aws-lambda-powertools = "*"
+boto3 = "*"
+exifread = {editable = true, ref = "feature/exifheader-changes", git = "https://github.com/ServerlessOpsIO/exif-py"}
 
 [dev-packages]
 flake8 = "*"

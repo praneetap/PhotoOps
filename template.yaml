@@ -94,6 +94,47 @@ Resources:
     Type: AWS::SQS::Queue
 
 
+  GetExifData:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Get EXIF data"
+      CodeUri: src/handlers/GetExifData
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GetExifDataDlqQueue.Arn
+      Events:
+        EventBridgeEvent:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref EventBus
+            InputPath: "$.detail.responsePayload"
+            Pattern:
+              source: [ "lambda" ]
+              detail-type: [ "Lambda Function Invocation Result - Success" ]
+              detail:
+                requestPayload:
+                  Records:
+                    Sns:
+                      TopicArn: [ !Ref PhotoOpsIngestTopic ]
+                responsePayload:
+                  Records:
+                    eventSource: [ "aws:s3" ]
+                    # FIXME: Is this all the possible event names?
+                    eventName: [ "ObjectCreated:CompleteMultipartUpload" ]
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
+
+  GetExifDataDlqQueue:
+    Type: AWS::SQS::Queue
+
+
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic
 
