@@ -58,8 +58,8 @@ def test_handler(event, exif_data, s3_client, func, mocker):
     s3_bucket_name = event['Records'][0]['s3']['bucket']['name']
     s3_object_key = event['Records'][0]['s3']['object']['key']
 
-    exif_data['pk'] = '{}#{}'.format(s3_bucket_name, s3_object_key)
-    exif_data['sk'] = 'exif#v0'
+    exif_data['Item']['pk'] = '{}#{}'.format(s3_bucket_name, s3_object_key)
+    exif_data['Item']['sk'] = 'exif#v0'
 
     s3_client.create_bucket(Bucket=s3_bucket_name)
 
