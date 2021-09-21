@@ -35,10 +35,16 @@ def _get_exif_data(s3_bucket: str, s3_object: str) -> dict:
             if exif_data.get('IFD0').get('EXIF').get('MakerNote') is not None:
                 del exif_data['IFD0']['EXIF']['MakerNote']
 
-    exif_data['pk'] = '{}#{}'.format(s3_bucket, s3_object)
-    exif_data['sk'] = 'exif#v0'
+    pk = '{}#{}'.format(s3_bucket, s3_object)
+    sk = 'exif#v0'
 
-    return {'Item': exif_data}
+    return {
+        'Item': {
+            'pk': pk,
+            'sk': sk,
+            'Exif': exif_data
+        }
+    }
 
 
 def handler(event: Dict[str, Any], context: LambdaContext) -> dict:
