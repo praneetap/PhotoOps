@@ -4,6 +4,7 @@ import json
 import logging
 import os
 
+from tempfile import TemporaryFile
 from typing import Any, Dict
 
 import boto3
@@ -22,7 +23,7 @@ s3_client = boto3.client('s3')
 
 def _get_exif_data(s3_bucket: str, s3_object: str) -> dict:
     '''Get EXIF data from object in S3'''
-    with open('image', 'wb+') as image:
+    with TemporaryFile('wb+') as image:
         s3_client.download_fileobj(s3_bucket, s3_object, image)
         image.seek(0)
         hdr = exifread.ExifHeader(image)
