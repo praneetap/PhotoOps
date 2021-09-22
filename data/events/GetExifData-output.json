@@ -1,5 +1,7 @@
 {
     "Item": {
+        "pk": "bucket#key",
+        "sk": "exif#v0",
         "Exif": {
             "IFD0": {
                 "SubfileType": "Reduced-resolution image",

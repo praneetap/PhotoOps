@@ -49,7 +49,7 @@ def _get_exif_data(s3_bucket: str, s3_object: str) -> dict:
 
 def handler(event: Dict[str, Any], context: LambdaContext) -> dict:
     '''Function entry'''
-    _logger.info('Event: {}'.format(json.dumps(event)))
+    _logger.debug('Event: {}'.format(json.dumps(event)))
 
     s3_event = S3Event(event)
 
@@ -58,7 +58,7 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> dict:
 
     exif_data = _get_exif_data(s3_bucket, s3_object)
 
-    _logger.info('EXIF: {}'.format(exif_data.get('Item')))
+    _logger.debug('EXIF: {}'.format(json.dumps(exif_data.get('Item'))))
 
     return exif_data
 
