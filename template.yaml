@@ -149,7 +149,28 @@ Resources:
                 - "lambda.amazonaws.com"
             Action:
               - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
       Policies:
+        - PolicyName: "EventBridgePutEvent"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "PutEvent"
+                Effect: "Allow"
+                Action:
+                  - "events:PutEvents"
+                Resource: !GetAtt EventBus.Arn
+        - PolicyName: "DlqWrite"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "PutMessage"
+                Effect: "Allow"
+                Action:
+                  - "sqs:SendMessage"
+                Resource: !GetAtt GetExifDataDlqQueue.Arn
         - PolicyName: "DownloadS3Object"
           PolicyDocument:
             Version: "2012-10-17"
