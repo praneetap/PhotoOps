@@ -17,7 +17,7 @@ exifread = {editable = true, ref = "feature/exifheader-changes", git = "https://
 
 [dev-packages]
 flake8 = "*"
-moto = "*"
+moto = {extras = ["dynamodb2", "s3"], version = "*"}
 mypy = "*"
 boto3-stubs = { extras = ["dynamodb", "lambda", "kinesis", "s3", "sns", "sqs", "ssm", "xray" ], version = "*"}
 pylint = "*"
