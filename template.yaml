@@ -187,6 +187,53 @@ Resources:
                 Resource: "arn:aws:s3:::*/"
 
 
+  PutDdbItem:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Put a DDB Item"
+      CodeUri: src/handlers/PutDdbItem
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      Environment:
+        Variables:
+          DDB_TABLE_NAME: !Ref DynamoDBTable
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt PutDdbItemDlqQueue.Arn
+      Policies:
+        - Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        EventBridgeEvent:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref EventBus
+            InputPath: "$.detail.responsePayload"
+            Pattern:
+              source: [ "lambda" ]
+              detail-type: [ "Lambda Function Invocation Result - Success" ]
+              detail:
+                responsePayload:
+                  Item:
+                    pk:
+                      - exists: true
+                    sk:
+                      - exists: true
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
+
+  PutDdbItemDlqQueue:
+    Type: AWS::SQS::Queue
+
 
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic

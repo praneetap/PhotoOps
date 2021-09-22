@@ -1,0 +1,12 @@
+{
+    "ResponseMetadata": {
+        "RequestId": "2UAVYFCJJJD5SAO4S747O7IC7Z4KHNEW4CX09LOTZJ1CVDYV375E",
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+            "server": "amazon.com",
+            "x-amzn-requestid": "2UAVYFCJJJD5SAO4S747O7IC7Z4KHNEW4CX09LOTZJ1CVDYV375E",
+            "x-amz-crc32": "2745614147"
+        },
+        "RetryAttempts": 0
+    }
+}
