@@ -106,6 +106,7 @@ Resources:
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifDataDlqQueue.Arn
+      Role: !GetAtt GetExifDataIamRole.Arn
       Events:
         EventBridgeEvent:
           Type: EventBridgeRule
@@ -133,6 +134,37 @@ Resources:
 
   GetExifDataDlqQueue:
     Type: AWS::SQS::Queue
+
+  GetExifDataIamRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-GetExifData"
+      Path: "/PhotoOpsAI/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "DownloadS3Object"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "GetS3Object"
+                Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource: "arn:aws:s3:::*/*"
+              - Sid: "ListS3Bucket"
+                Effect: "Allow"
+                Action:
+                  - "s3:ListBucket"
+                Resource: "arn:aws:s3:::*/"
+
 
 
   PhotoOpsIngestTopic:

@@ -1,5 +1,9 @@
 '''Fetch S3 object and return EXIF data item'''
 
+# FIXME: Investigate Amazon S3 Object Lambda to replace the download.
+#
+# ref. https://aws.amazon.com/blogs/aws/introducing-amazon-s3-object-lambda-use-your-code-to-process-data-as-it-is-being-retrieved-from-s3/
+
 import json
 import logging
 import os
