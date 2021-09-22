@@ -94,6 +94,10 @@ Resources:
     Type: AWS::SQS::Queue
 
 
+  # FIXME: Running close to memory limit but don't want to bump memory up for
+  # all transactions. Possibly we create small, medium, and large functions
+  # where we use the object size in the S3 event as a determining factor for
+  # which function gets invoked.
   GetExifData:
     Type: AWS::Serverless::Function
     Properties:

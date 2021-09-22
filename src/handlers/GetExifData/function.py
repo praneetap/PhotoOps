@@ -31,8 +31,7 @@ def _get_exif_data(s3_bucket: str, s3_object: str) -> dict:
         s3_client.download_fileobj(s3_bucket, s3_object, image)
         image.seek(0)
         hdr = exifread.ExifHeader(image)
-
-    exif_data = hdr.dump_tag_values()
+        exif_data = hdr.dump_tag_values()
 
     # MakerNote data can be big
     if exif_data.get('IFD0') is not None:
