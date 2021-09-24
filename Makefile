@@ -53,11 +53,12 @@ function:
 	touch src/handlers/${F}/__init__.py
 	touch src/handlers/${F}/function.py
 	mkdir -p tests/{unit,integration}/src/handlers/${F}
+	touch tests/unit/src/handlers/${F}/__init__.py
 	touch tests/unit/src/handlers/${F}/test_handler.py
 	touch tests/integration/src/handlers/${F}/__init__.py
 	touch tests/integration/src/handlers/${F}/test_handler.py
 	echo "-e src/common/" > src/handlers/${F}/requirements.txt
-	touch events/${F}-{event,msg}.json
+	touch data/events/${F}-{event,msg}.json
 
 unit-test:
 	$(info running unit tests)
