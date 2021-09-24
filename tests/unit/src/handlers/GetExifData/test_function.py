@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=protected-access
-'''Test IngestS3Event'''
+'''test GetExifData'''
 
 import json
 import os
