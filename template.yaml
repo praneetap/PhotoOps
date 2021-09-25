@@ -129,7 +129,8 @@ Resources:
                   Records:
                     eventSource: [ "aws:s3" ]
                     # FIXME: Is this all the possible event names?
-                    eventName: [ "ObjectCreated:CompleteMultipartUpload" ]
+                    eventName:
+                      - prefix: "ObjectCreated:"
       EventInvokeConfig:
         DestinationConfig:
           OnSuccess:
