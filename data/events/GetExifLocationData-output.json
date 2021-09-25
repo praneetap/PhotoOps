@@ -1,0 +1,34 @@
+{
+  "Item": {
+    "pk": "bucket#key",
+    "sk": "location#v0",
+    "GPSVersionID": [
+      2,
+      3,
+      0,
+      0
+    ],
+    "GPSLatitudeRef": "N",
+    "GPSLatitude": [
+      41.0,
+      53.5986,
+      0.0
+    ],
+    "GPSLongitudeRef": "W",
+    "GPSLongitude": [
+      87.0,
+      37.7239,
+      0.0
+    ],
+    "GPSAltitudeRef": 0,
+    "GPSAltitude": 193.0,
+    "GPSTimeStamp": [
+      5.0,
+      25.0,
+      8.5
+    ],
+    "GPSSatellites": "00",
+    "GPSMapDatum": "WGS-84",
+    "GPSDate": "2021:09:13"
+  }
+}
