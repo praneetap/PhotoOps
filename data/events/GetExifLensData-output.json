@@ -1,0 +1,20 @@
+{
+  "Item": {
+    "pk": "bucket#key",
+    "sk": "lens#v0",
+    "Make": null,
+    "Model": null,
+    "SerialNumber": null,
+    "MinFocal": 50,
+    "MaxFocal": 50,
+    "MinAperture": null,
+    "MaxApertureHigh": 1.8,
+    "MaxApertureLow": 1.8,
+    "AutoFocus": true,
+    "VibrationReduction": false,
+    "LensMakerType": null,
+    "CameraMakerType": ["AF", "G"],
+    "Macro": null,
+    "Zoom": false
+  }
+}

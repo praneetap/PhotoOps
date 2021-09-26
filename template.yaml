@@ -230,6 +230,44 @@ Resources:
     Type: AWS::SQS::Queue
 
 
+  GetExifLensData:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Get EXIF lens data"
+      CodeUri: src/handlers/GetExifLensData
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GetExifLensDataDlqQueue.Arn
+      Events:
+        EventBridgeEvent:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref EventBus
+            InputPath: "$.detail.responsePayload.Item"
+            Pattern:
+              source: [ "lambda" ]
+              detail-type: [ "Lambda Function Invocation Result - Success" ]
+              detail:
+                responsePayload:
+                  Item:
+                    pk:
+                      - exists: true
+                    sk:
+                      - 'exif#v0'
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
+
+  GetExifLensDataDlqQueue:
+    Type: AWS::SQS::Queue
+
+
   GetExifLocationData:
     Type: AWS::Serverless::Function
     Properties:
