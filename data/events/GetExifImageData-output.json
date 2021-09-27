@@ -1,0 +1,39 @@
+{
+  "Item": {
+    "pk": "bucket#key",
+    "sk": "image#v0",
+
+    "FileType": "",
+    "SubfileType": "",
+    "Compression": "",
+    "Compressed": "",
+    "RAW": true,
+    
+    "DateTime": "21:09:13 00:29:04",
+    "DateTimeOffset": "-05:00",
+    
+    "ImageWidth": "",
+    "ImageLength": "",
+    
+    "AutoFocus": true,
+    "ExposureMode": "Manual Exposure",
+    "ExposureProgram": "Manual",
+    "ExposureTime": 5.0,
+    "Flash": "Flash did not fire, compulsory flash mode",
+    "FNumber": 16.0,
+    "FocalLength": 50.0,
+    "FocalLengthIn35mmFilm": 75,
+    "PhotographicSensitivity": 100,
+    "LightSource": "Unknown",
+    "MeteringMode": "LightSource",
+    "SensingMethod": "One-chip color area",
+    "SensitivityType": "Recommended Exposure Index",
+    
+    "Contrast": "MeteringMode",
+    "GainControl": "None",
+    "Saturation": "MeteringMode",
+    "Sharpness": "MeteringMode",
+    "SubjectDistanceRange": "unknown",
+    "WhiteBalance": "Auto"
+  }
+}
