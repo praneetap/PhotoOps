@@ -1,5 +1,5 @@
 {
-    "pk": "bucket#key",
+    "pk": "bucket#key.nef",
     "sk": "exif#v0",
     "Exif": {
         "IFD0": {

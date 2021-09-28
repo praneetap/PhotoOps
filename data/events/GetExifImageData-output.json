@@ -1,20 +1,19 @@
 {
   "Item": {
-    "pk": "bucket#key",
+    "pk": "bucket#key.nef",
     "sk": "image#v0",
 
-    "FileType": "",
-    "SubfileType": "",
-    "Compression": "",
-    "Compressed": "",
-    "RAW": true,
-    
-    "DateTime": "21:09:13 00:29:04",
+    "FileType": "NEF",
+    "Compression": "Nikon NEF Compressed",
+    "JPEG": false,
+
+    "Length": 3728,
+    "Width": 5600,
+    "Orientation": "Horizontal (normal)",
+
+    "DateTime": "2021:09:13 00:29:04",
     "DateTimeOffset": "-05:00",
-    
-    "ImageWidth": "",
-    "ImageLength": "",
-    
+
     "AutoFocus": true,
     "ExposureMode": "Manual Exposure",
     "ExposureProgram": "Manual",
@@ -23,16 +22,16 @@
     "FNumber": 16.0,
     "FocalLength": 50.0,
     "FocalLengthIn35mmFilm": 75,
-    "PhotographicSensitivity": 100,
+    "PhotographicSensitivity": [ 100 ],
     "LightSource": "Unknown",
-    "MeteringMode": "LightSource",
+    "MeteringMode": "Pattern",
     "SensingMethod": "One-chip color area",
     "SensitivityType": "Recommended Exposure Index",
-    
-    "Contrast": "MeteringMode",
+
+    "Contrast": "Normal",
     "GainControl": "None",
-    "Saturation": "MeteringMode",
-    "Sharpness": "MeteringMode",
+    "Saturation": "Normal",
+    "Sharpness": "Normal",
     "SubjectDistanceRange": "unknown",
     "WhiteBalance": "Auto"
   }
