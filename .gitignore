@@ -64,6 +64,8 @@ venv.bak/
 .settings/
 .project
 .pydevproject
+.vscode/
+*.code-workspace
 
 # Cruft
 .DS_Store
