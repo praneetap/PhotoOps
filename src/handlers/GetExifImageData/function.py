@@ -4,10 +4,12 @@ import json
 import logging
 import os
 
+from dataclasses import asdict
 from typing import Any, Dict, Tuple, Union
 from xmlrpc.client import Boolean
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from common import ImageExifData, ImageExifDataItem, ImageExifDataResponse
 
 
 # FIXME: Replace with powertools logger
@@ -74,7 +76,7 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
     return (length, width, orientation, compression, is_jpeg)
 
 
-def _get_exif_image_data(event: Dict[str, Any]) -> Dict[str, Any]:
+def _get_exif_image_data(event: Dict[str, Any]) -> ImageExifData:
     '''Return normalized image data'''
 
     exif = event.get('Exif', {})
@@ -82,77 +84,77 @@ def _get_exif_image_data(event: Dict[str, Any]) -> Dict[str, Any]:
     image_data: Dict[str, Any] = {}
 
     length, width, orientation, compression, is_jpeg = _get_image_info(exif)
-    image_data['Length'] = length
-    image_data['Width'] = width
-    image_data['Orientation'] = orientation
-    image_data['Compression'] = compression
-    image_data['JPEG'] = is_jpeg
+    image_data['length'] = length
+    image_data['width'] = width
+    image_data['orientation'] = orientation
+    image_data['compression'] = compression
+    image_data['jpeg'] = is_jpeg
 
     file_split = event.get('pk', '').split('.')
     print(file_split)
     if len(file_split) == 1:
-        image_data['FileType'] = 'UNKNOWN'
+        image_data['file_type'] = 'UNKNOWN'
     else:
         file_extension = file_split[-1].upper()
         if file_extension in ['JPEG', 'JPG']:
-            image_data['FileType'] = 'JPEG'
+            image_data['file_type'] = 'JPEG'
         elif file_extension in ['TIFF', 'TIF']:
-            image_data['FileType'] = 'TIFF'
+            image_data['file_type'] = 'TIFF'
         else:
-            image_data['FileType'] = file_extension
+            image_data['file_type'] = file_extension
 
     # NOTE: DateTime is complicated. We should check for discrepancies between all the
     # locations and decide what to use when.
-    image_data['DateTime'] = ifd0.get('DateTime')
-    image_data['DateTimeOffset'] = ifd0.get('EXIF', {}).get('OffsetTime')
+    image_data['datetime'] = ifd0.get('DateTime')
+    image_data['datetime_offset'] = ifd0.get('EXIF', {}).get('OffsetTime')
 
-    image_data['AutoFocus'] = True if ifd0.get('MakerNote', {}).get('FocusMode', '').startswith('AF') else False   # Note: varies by brand.
-    image_data['ExposureMode'] = ifd0.get('EXIF', {}).get('ExposureMode')
-    image_data['ExposureProgram'] = ifd0.get('EXIF', {}).get('ExposureProgram')
-    image_data['ExposureTime'] = ifd0.get('EXIF', {}).get('ExposureTime')
-    image_data['Flash'] = ifd0.get('EXIF', {}).get('Flash')
-    image_data['FNumber'] = ifd0.get('EXIF', {}).get('FNumber')
-    image_data['FocalLength'] = ifd0.get('EXIF', {}).get('FocalLength')
-    image_data['FocalLengthIn35mmFilm'] = ifd0.get('EXIF', {}).get('FocalLengthIn35mmFilm')
+    image_data['auto_focus'] = True if ifd0.get('MakerNote', {}).get('FocusMode', '').startswith('AF') else False   # Note: varies by brand.
+    image_data['exposure_mode'] = ifd0.get('EXIF', {}).get('ExposureMode')
+    image_data['exposure_program'] = ifd0.get('EXIF', {}).get('ExposureProgram')
+    image_data['exposure_time'] = ifd0.get('EXIF', {}).get('ExposureTime')
+    image_data['flash'] = ifd0.get('EXIF', {}).get('Flash')
+    image_data['fnumber'] = ifd0.get('EXIF', {}).get('FNumber')
+    image_data['focal_length'] = ifd0.get('EXIF', {}).get('FocalLength')
+    image_data['focal_length_in_35mm_film'] = ifd0.get('EXIF', {}).get('FocalLengthIn35mmFilm')
     # ISO
     # NOTE: These two tags are related but I don't know what variations exist. Also my favorite
     # line from the spec:
     #
     # "While 'Count = Any', only 1 should be used"
-    image_data['PhotographicSensitivity'] = ifd0.get('EXIF', {}).get('PhotographicSensitivity', [])
-    image_data['SensitivityType'] = ifd0.get('EXIF', {}).get('SensitivityType')
+    image_data['photographic_sensitivity'] = ifd0.get('EXIF', {}).get('PhotographicSensitivity', [])
+    image_data['sensitivity_type'] = ifd0.get('EXIF', {}).get('SensitivityType')
 
-    image_data['LightSource'] = ifd0.get('EXIF', {}).get('LightSource')
-    image_data['MeteringMode'] = ifd0.get('EXIF', {}).get('MeteringMode')
-    image_data['SensingMethod'] = ifd0.get('EXIF', {}).get('SensingMethod')
+    image_data['light_source'] = ifd0.get('EXIF', {}).get('LightSource')
+    image_data['metering_mode'] = ifd0.get('EXIF', {}).get('MeteringMode')
+    image_data['sensing_method'] = ifd0.get('EXIF', {}).get('SensingMethod')
 
-    image_data['Contrast'] = ifd0.get('EXIF', {}).get('Contrast')
-    image_data['GainControl'] = ifd0.get('EXIF', {}).get('GainControl')
-    image_data['Saturation'] = ifd0.get('EXIF', {}).get('Saturation')
-    image_data['Sharpness'] = ifd0.get('EXIF', {}).get('Sharpness')
-    image_data['SubjectDistanceRange'] = ifd0.get('EXIF', {}).get('SubjectDistanceRange')
-    image_data['WhiteBalance'] = ifd0.get('EXIF', {}).get('WhiteBalance')
+    image_data['contrast'] = ifd0.get('EXIF', {}).get('Contrast')
+    image_data['gain_control'] = ifd0.get('EXIF', {}).get('GainControl')
+    image_data['saturation'] = ifd0.get('EXIF', {}).get('Saturation')
+    image_data['sharpness'] = ifd0.get('EXIF', {}).get('Sharpness')
+    image_data['subject_distance_range'] = ifd0.get('EXIF', {}).get('SubjectDistanceRange')
+    image_data['white_balance'] = ifd0.get('EXIF', {}).get('WhiteBalance')
 
-    return image_data
+    return ImageExifData(**image_data)
 
 
-def handler(event: Dict[str, Any], context: LambdaContext) -> Dict[str, Any]:
+def handler(event: Dict[str, Any], context: LambdaContext) -> ImageExifDataResponse:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
 
     pk = event.get('pk')
     sk = 'image#v0'
     image_data = _get_exif_image_data(event)
-
-    p = (pk, sk)
-    response = {
-        'Item': {
+    image_data_item = ImageExifDataItem(
+        **{
             'pk': pk,
             'sk': sk,
-            **image_data
+            **image_data.__dict__
         }
-    }
+    )
 
-    _logger.debug('Response: {}'.format(json.dumps(response)))
+    response = ImageExifDataResponse(**{'Item': image_data_item})
+
+    _logger.debug('Response: {}'.format(json.dumps(asdict(response))))
 
     return response
