@@ -2,33 +2,33 @@
   "Item": {
     "pk": "bucket#key",
     "sk": "location#v0",
-    "GPSVersionID": [
+    "gps_version_id": [
       2,
       3,
       0,
       0
     ],
-    "GPSLatitudeRef": "N",
-    "GPSLatitude": [
+    "gps_latitude_ref": "N",
+    "gps_latitude": [
       41.0,
       53.5986,
       0.0
     ],
-    "GPSLongitudeRef": "W",
-    "GPSLongitude": [
+    "gps_longitude_ref": "W",
+    "gps_longitude": [
       87.0,
       37.7239,
       0.0
     ],
-    "GPSAltitudeRef": 0,
-    "GPSAltitude": 193.0,
-    "GPSTimeStamp": [
+    "gps_altitude_ref": 0,
+    "gps_altitude": 193.0,
+    "gps_timestamp": [
       5.0,
       25.0,
       8.5
     ],
-    "GPSSatellites": "00",
-    "GPSMapDatum": "WGS-84",
-    "GPSDate": "2021:09:13"
+    "gps_satellites": "00",
+    "gps_map_datum": "WGS-84",
+    "gps_date": "2021:09:13"
   }
 }
