@@ -2,19 +2,19 @@
   "Item": {
     "pk": "bucket#key",
     "sk": "lens#v0",
-    "Make": null,
-    "Model": null,
-    "SerialNumber": null,
-    "MinFocal": 50,
-    "MaxFocal": 50,
-    "MinAperture": null,
-    "MaxApertureHigh": 1.8,
-    "MaxApertureLow": 1.8,
-    "AutoFocus": true,
-    "VibrationReduction": false,
-    "LensMakerType": null,
-    "CameraMakerType": ["AF", "G"],
-    "Macro": null,
-    "Zoom": false
+    "make": null,
+    "model": null,
+    "serial_number": null,
+    "min_focal": 50,
+    "max_focal": 50,
+    "min_aperture": null,
+    "max_aperture_high": 1.8,
+    "max_aperture_low": 1.8,
+    "auto_focus": true,
+    "vibration_reduction": false,
+    "lens_maker_type": [],
+    "camera_maker_type": ["AF", "G"],
+    "macro": null,
+    "zoom": false
   }
 }
