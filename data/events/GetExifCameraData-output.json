@@ -2,9 +2,9 @@
   "Item": {
     "pk": "bucket#key",
     "sk": "camera#v0",
-    "Make": "NIKON CORPORATION",
-    "Model": "NIKON D7500",
-    "Software": "Ver.1.10",
-    "SerialNumber": "3101559"
+    "make": "NIKON CORPORATION",
+    "model": "NIKON D7500",
+    "software": "Ver.1.10",
+    "serial_number": "3101559"
   }
 }

@@ -6,9 +6,9 @@ import json
 import os
 
 import pytest
-
 import src.handlers.GetExifCameraData.function as func
 
+from dataclasses import asdict
 
 DATA_DIR = './data'
 EVENT_DIR = os.path.join(DATA_DIR, 'events')
@@ -34,5 +34,4 @@ def expected_response(request):
 def test_handler(event, expected_response, mocker):
     '''Call handler'''
     resp = func.handler(event, {})
-    assert resp == expected_response
-
+    assert asdict(resp) == expected_response
