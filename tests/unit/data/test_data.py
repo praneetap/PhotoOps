@@ -10,6 +10,7 @@ import pytest
 
 DATA_DIR = './data'
 EVENT_DIR = os.path.join(DATA_DIR, 'events')
+SCHEMA_DIR = os.path.join(DATA_DIR, 'schemas')
 IMAGE_DIR = os.path.join(DATA_DIR, 'images')
 MODEL_DIR = os.path.join(DATA_DIR, 'models')
 
@@ -24,7 +25,7 @@ def event():
 @pytest.fixture()
 def sns_event_schema():
     '''Return an SNS event schema'''
-    with open(os.path.join(EVENT_DIR, 'lambda-sns-event.schema.json')) as f:
+    with open(os.path.join(SCHEMA_DIR, 'lambda-sns-event.schema.json')) as f:
         return json.load(f)
 
 
@@ -38,7 +39,7 @@ def s3_notification(request):
 @pytest.fixture()
 def s3_notification_schema():
     '''Return an S3 notification'''
-    with open(os.path.join(EVENT_DIR, 's3-notification.schema.json')) as f:
+    with open(os.path.join(SCHEMA_DIR, 's3-notification.schema.json')) as f:
         return json.load(f)
 
 

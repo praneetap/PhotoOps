@@ -25,9 +25,9 @@ def event(request):
 
 @pytest.fixture(params=[
     'test_image_nikon.NEF',
-    'test_image_nikon.dng',
-    'test_image_nikon_embedded_raw.dng',
-    'test_image_nikon.tif',
+    'test_image_lightroom_nikon.dng',
+    'test_image_lightroom_nikon_embedded_raw.dng',
+    'test_image_lightroom_nikon.tif',
 ])
 def image(request):
     '''Return an image file object'''
