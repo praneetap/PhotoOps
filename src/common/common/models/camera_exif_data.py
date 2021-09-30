@@ -24,9 +24,3 @@ class CameraExifDataItem(CameraExifData):
     '''Camera EXIF data DDB item'''
     pk: str = ''
     sk: str = ''
-
-
-@dataclass
-class CameraExifDataResponse(PutDdbItemAction):
-    ''''''
-    Item: CameraExifDataItem

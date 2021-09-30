@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
-        "Item": { "$ref": "./CameraExifDataItem.schema.json" }
+        "Item": { "$schema": "./LocationExifDataItem.schema.json" }
     },
     "required": [
         "Item"

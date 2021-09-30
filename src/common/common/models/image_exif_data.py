@@ -48,9 +48,3 @@ class ImageExifDataItem(ImageExifData):
     '''Image EXIF data DDB item'''
     pk: Optional[str] = ''
     sk: Optional[str] = ''
-
-
-@dataclass
-class ImageExifDataResponse(PutDdbItemAction):
-    '''Function response'''
-    Item: ImageExifDataItem

@@ -31,8 +31,3 @@ class LocationExifDataItem(LocationExifData):
     '''Location EXIF data DDB item'''
     pk: str = ''
     sk: str = ''
-
-@dataclass
-class LocationExifDataResponse(PutDdbItemAction):
-    '''Function response'''
-    Item: LocationExifDataItem

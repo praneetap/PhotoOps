@@ -4,18 +4,24 @@ import json
 import logging
 import os
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict, Tuple, Union
 from xmlrpc.client import Boolean
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import ImageExifData, ImageExifDataItem, ImageExifDataResponse
+from common import ImageExifData, ImageExifDataItem, PutDdbItemAction
 
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Response(PutDdbItemAction):
+    '''Function response'''
+    Item: ImageExifDataItem
 
 
 def _get_image_info(exif: Dict[str, Any]) -> Tuple[
@@ -138,7 +144,7 @@ def _get_exif_image_data(event: Dict[str, Any]) -> ImageExifData:
     return ImageExifData(**image_data)
 
 
-def handler(event: Dict[str, Any], context: LambdaContext) -> ImageExifDataResponse:
+def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
 
@@ -153,7 +159,7 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> ImageExifDataRespo
         }
     )
 
-    response = ImageExifDataResponse(**{'Item': image_data_item})
+    response = Response(**{'Item': image_data_item})
 
     _logger.debug('Response: {}'.format(json.dumps(asdict(response))))
 

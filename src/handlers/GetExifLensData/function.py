@@ -4,16 +4,22 @@ import json
 import logging
 import os
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict, List, Optional, Union
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import LensExifData, LensExifDataItem, LensExifDataResponse
+from common import LensExifData, LensExifDataItem, PutDdbItemAction
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Response(PutDdbItemAction):
+    '''Function response'''
+    Item: LensExifDataItem
 
 
 def _get_lens_focal_attrs(ifd: dict) -> Dict[str, Union[int, float, None]]:
@@ -53,7 +59,7 @@ def _get_exif_lens_data(event: dict) -> LensExifData:
     return LensExifData(**lens_data)
 
 
-def handler(event: Dict[str, Any], context: LambdaContext) -> LensExifDataResponse:
+def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
 
@@ -68,7 +74,7 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> LensExifDataRespon
         }
     )
 
-    response = LensExifDataResponse(**{'Item': lens_data_item})
+    response = Response(**{'Item': lens_data_item})
 
     _logger.debug('Response: {}'.format(json.dumps(asdict(response))))
 

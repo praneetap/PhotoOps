@@ -4,17 +4,23 @@ import json
 import logging
 import os
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict, Optional
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import LocationExifData, LocationExifDataItem, LocationExifDataResponse
+from common import LocationExifData, LocationExifDataItem, PutDdbItemAction
 
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Response(PutDdbItemAction):
+    '''Function response'''
+    Item: LocationExifDataItem
 
 
 def _get_exif_location_data(event: dict) -> LocationExifData:
@@ -35,7 +41,7 @@ def _get_exif_location_data(event: dict) -> LocationExifData:
     return LocationExifData(**location_data)
 
 
-def handler(event: Dict[str, Any], context: LambdaContext) -> LocationExifDataResponse:
+def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
 
@@ -50,7 +56,7 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> LocationExifDataRe
         }
     )
 
-    response = LocationExifDataResponse(**{'Item': location_data_item})
+    response = Response(**{'Item': location_data_item})
 
     _logger.debug('Response: {}'.format(json.dumps(asdict(response))))
 

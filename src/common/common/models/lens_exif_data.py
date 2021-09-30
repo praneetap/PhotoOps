@@ -35,9 +35,3 @@ class LensExifDataItem(LensExifData):
     '''Camera EXIF data DDB item'''
     pk: str = ''
     sk: str = ''
-
-
-@dataclass
-class LensExifDataResponse(PutDdbItemAction):
-    '''Function response'''
-    Item: LensExifDataItem
