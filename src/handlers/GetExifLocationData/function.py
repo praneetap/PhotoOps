@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 def _get_exif_location_data(event: dict) -> LocationExifData:
     '''Return normalized location data'''
     location_data = {}
-    location_data['gps_version_id'] = event.get('Exif', {}).get('IFD0', {}).get('GPS', {}).get('GPSVersionID', [])
+    location_data['gps_version_id'] = event.get('Exif', {}).get('IFD0', {}).get('GPS', {}).get('GPSVersionID')
     location_data['gps_latitude_ref'] = event.get('Exif', {}).get('IFD0', {}).get('GPS', {}).get('GPSLatitudeRef')
     location_data['gps_latitude'] = event.get('Exif', {}).get('IFD0', {}).get('GPS', {}).get('GPSLatitude')
     location_data['gps_longitude_ref'] = event.get('Exif', {}).get('IFD0', {}).get('GPS', {}).get('GPSLongitudeRef')
