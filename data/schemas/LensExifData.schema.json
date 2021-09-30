@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "make": {
+            "type": "string"
+        },
+        "model": {
+            "type": "string"
+        },
+        "serial_number": {
+            "type": "string"
+        },
+        "min_focal": {
+            "type": "integer"
+        },
+        "max_focal": {
+            "type": "integer"
+        },
+        "min_aperture": {
+            "type": "number"
+        },
+        "max_aperture_high": {
+            "type": "number"
+        },
+        "max_aperture_low": {
+            "type": "number"
+        },
+        "auto_focus": {
+            "type": "boolean"
+        },
+        "vibration_reduction": {
+            "type": "boolean"
+        },
+        "lens_maker_type": {
+            "type": "array"
+        },
+        "camera_maker_type": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "macro": {
+            "type": "boolean"
+        },
+        "zoom": {
+            "type": "boolean"
+        }
+    },
+    "required": []
+}

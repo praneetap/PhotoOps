@@ -1,0 +1,16 @@
+{
+    "$schema": "./LocationExifData.schema.json",
+    "type": "object",
+    "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "pk",
+        "sk"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "make": {
+            "type": "string"
+        },
+        "model": {
+            "type": "string"
+        },
+        "software": {
+            "type": "string"
+        },
+        "serial_number": {
+            "type": "string"
+        }
+    },
+    "required": []
+}

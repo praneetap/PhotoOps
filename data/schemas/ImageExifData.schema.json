@@ -1,0 +1,91 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "file_type": {
+            "type": "string"
+        },
+        "compression": {
+            "type": "string"
+        },
+        "jpeg": {
+            "type": "boolean"
+        },
+        "length": {
+            "type": "integer"
+        },
+        "width": {
+            "type": "integer"
+        },
+        "orientation": {
+            "type": "string"
+        },
+        "datetime": {
+            "type": "string"
+        },
+        "datetime_offset": {
+            "type": "string"
+        },
+        "auto_focus": {
+            "type": "boolean"
+        },
+        "exposure_mode": {
+            "type": "string"
+        },
+        "exposure_program": {
+            "type": "string"
+        },
+        "exposure_time": {
+            "type": "number"
+        },
+        "flash": {
+            "type": "string"
+        },
+        "fnumber": {
+            "type": "number"
+        },
+        "focal_length": {
+            "type": "number"
+        },
+        "focal_length_in_35mm_film": {
+            "type": "integer"
+        },
+        "photographic_sensitivity": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "light_source": {
+            "type": "string"
+        },
+        "metering_mode": {
+            "type": "string"
+        },
+        "sensing_method": {
+            "type": "string"
+        },
+        "sensitivity_type": {
+            "type": "string"
+        },
+        "contrast": {
+            "type": "string"
+        },
+        "gain_control": {
+            "type": "string"
+        },
+        "saturation": {
+            "type": "string"
+        },
+        "sharpness": {
+            "type": "string"
+        },
+        "subject_distance_range": {
+            "type": "string"
+        },
+        "white_balance": {
+            "type": "string"
+        }
+    },
+    "required": []
+}

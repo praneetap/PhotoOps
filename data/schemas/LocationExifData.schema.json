@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "gps_version_id": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "gps_latitude_ref": {
+            "type": "string"
+        },
+        "gps_latitude": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "gps_longitude_ref": {
+            "type": "string"
+        },
+        "gps_longitude": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "gps_altitude_ref": {
+            "type": "integer"
+        },
+        "gps_altitude": {
+            "type": "number"
+        },
+        "gps_timestamp": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            }
+        },
+        "gps_satellites": {
+            "type": "string"
+        },
+        "gps_map_datum": {
+            "type": "string"
+        },
+        "gps_date": {
+            "type": "string"
+        }
+    },
+    "required": []
+}
