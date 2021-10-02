@@ -16,6 +16,11 @@ setup(
     keywords="PhotoOps Service",
     python_requires='>=3.8.*',
     include_package_data=True,
+    install_requires=[
+        'inflection',
+        'json2python-models',
+        'dataclasses_json'
+    ],
     classifiers=[
         'Environment :: Console',
         'Environment :: Other Environment',

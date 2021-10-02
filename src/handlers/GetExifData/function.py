@@ -8,6 +8,7 @@ import json
 import logging
 import os
 
+from dataclasses import asdict, dataclass
 from tempfile import TemporaryFile
 from typing import Any, Dict
 
@@ -17,6 +18,8 @@ import exifread
 from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
+from common import ExifDataItem, PutDdbItemAction, make_exif_data_dataclass
+
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
@@ -25,33 +28,30 @@ _logger = logging.getLogger(__name__)
 s3_client = boto3.client('s3')
 
 
-def _get_exif_data(s3_bucket: str, s3_object: str) -> dict:
+@dataclass
+class Response(PutDdbItemAction):
+    '''Function response'''
+    Item: ExifDataItem
+
+
+def _get_exif_data(s3_bucket: str, s3_object: str):
     '''Get EXIF data from object in S3'''
     with TemporaryFile('wb+') as image:
         s3_client.download_fileobj(s3_bucket, s3_object, image)
         image.seek(0)
         hdr = exifread.ExifHeader(image)
-        exif_data = hdr.dump_tag_values()
+        exif_data = make_exif_data_dataclass(**hdr.dump_tag_values())
 
     # MakerNote data can be big
-    if exif_data.get('IFD0') is not None:
-        if exif_data.get('IFD0').get('EXIF') is not None:
-            if exif_data.get('IFD0').get('EXIF').get('MakerNote') is not None:
-                del exif_data['IFD0']['EXIF']['MakerNote']
+    if exif_data.ifd0 is not None:
+        if exif_data.ifd0.exif_ifd is not None:
+            if exif_data.ifd0.exif_ifd.maker_note is not None:
+                del exif_data.ifd0.exif_ifd.maker_note
 
-    pk = '{}#{}'.format(s3_bucket, s3_object)
-    sk = 'exif#v0'
-
-    return {
-        'Item': {
-            'pk': pk,
-            'sk': sk,
-            'Exif': exif_data
-        }
-    }
+    return exif_data
 
 
-def handler(event: Dict[str, Any], context: LambdaContext) -> dict:
+def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
 
@@ -59,10 +59,19 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> dict:
 
     s3_bucket = s3_event.bucket_name
     s3_object = s3_event.object_key
+    pk = '{}#{}'.format(s3_bucket, s3_object)
+    sk = 'exif#v0'
 
     exif_data = _get_exif_data(s3_bucket, s3_object)
+    exif_data_item = ExifDataItem(
+        **{
+            'pk': pk,
+            'sk': sk,
+            'exif': exif_data
+        }
+    )
+    response = Response(**{'Item': exif_data_item})
 
-    _logger.debug('EXIF: {}'.format(json.dumps(exif_data.get('Item'))))
+    _logger.debug('EXIF: {}'.format(json.dumps(asdict(response))))
 
-    return exif_data
-
+    return response

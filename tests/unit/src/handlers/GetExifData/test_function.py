@@ -6,12 +6,16 @@ import json
 import os
 
 import boto3
+import jsonschema
 import exifread
 import moto
 import pytest
 
+from dataclasses import asdict
+
 DATA_DIR = './data'
 EVENT_DIR = os.path.join(DATA_DIR, 'events')
+SCHEMA_DIR = os.path.join(DATA_DIR, 'schemas')
 IMAGE_DIR = os.path.join(DATA_DIR, 'images')
 MODEL_DIR = os.path.join(DATA_DIR, 'models')
 
@@ -20,6 +24,13 @@ MODEL_DIR = os.path.join(DATA_DIR, 'models')
 def event(request):
     '''Return a test event'''
     with open(os.path.join(EVENT_DIR, request.param)) as f:
+        return json.load(f)
+
+
+@pytest.fixture()
+def event_schema():
+    '''Return an event schema'''
+    with open(os.path.join(SCHEMA_DIR, 's3-notification.schema.json')) as f:
         return json.load(f)
 
 
@@ -60,21 +71,19 @@ def s3_object_key(event):
     return event['Records'][0]['s3']['object']['key']
 
 
-@pytest.fixture()
-def item(exif_data, s3_bucket_name, s3_object_key):
-    '''Return DDB item'''
-    item = {
-        'pk': '{}#{}'.format(s3_bucket_name, s3_object_key),
-        'sk': 'exif#v0',
-        'Exif': exif_data
-    }
-    return item
+@pytest.fixture(params=['GetExifData-output.json'])
+def expected_response(request):
+    '''Return a test event'''
+    with open(os.path.join(EVENT_DIR, request.param)) as f:
+        return json.load(f)
 
 
 @pytest.fixture()
-def expected_response(item):
-    '''Expected function response'''
-    return {'Item': item}
+def response_schema():
+    '''Return a response schema'''
+    with open(os.path.join(SCHEMA_DIR, 'GetExifDataResponse.schema.json')) as f:
+        return json.load(f)
+
 
 ### AWS clients
 @pytest.fixture()
@@ -104,9 +113,20 @@ def func(s3_client):
     return func
 
 
+# Data validation
+def test_validate_event(event, event_schema):
+    '''Test event data against schema'''
+    jsonschema.validate(event, event_schema)
+
+
+def test_validate_expected_response(expected_response, response_schema):
+    '''Test response data against schema'''
+    jsonschema.validate(expected_response, response_schema)
+
+
 ### Tests
 @moto.mock_s3
-def test_handler(event, image, item, expected_response, s3_client, s3_bucket_name, s3_object_key, func, mocker):
+def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_object_key, func, mocker):
     '''Call handler'''
     s3_client.create_bucket(Bucket=s3_bucket_name)
 
@@ -116,5 +136,4 @@ def test_handler(event, image, item, expected_response, s3_client, s3_bucket_nam
     image.seek(0)
 
     resp = func.handler(event, {})
-    assert resp == expected_response
-
+    assert asdict(resp) == expected_response

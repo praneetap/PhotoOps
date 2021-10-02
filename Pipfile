@@ -14,6 +14,7 @@ rawpy = "*"
 aws-lambda-powertools = "*"
 boto3 = "*"
 exifread = {editable = true, ref = "feature/exifheader-changes", git = "https://github.com/ServerlessOpsIO/exif-py"}
+dataclasses-json = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -30,6 +31,7 @@ cfn-lint = "*"
 genson = "*"
 jsonschema = "*"
 json2python-models = "*"
+dataclasses-jsonschema = "*"
 
 [scripts]
 #install-lambda-functions = "pipenv install -r src/requirements.txt"

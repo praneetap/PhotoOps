@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string"
+        },
+        "exif": {
+            "$schema": "./ExifData.schema.json"
+        }
+    },
+    "required": [
+        "exif",
+        "pk",
+        "sk"
+    ]
+}

@@ -1,0 +1,404 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "IFD0": { "$ref": "/schemas/ifd" }
+    },
+    "patternProperties": {
+        "^IFD[1-9]$": { "$ref": "/schemas/imageIfd" }
+    },
+    "required": [
+        "IFD0"
+    ],
+    "$defs": {
+        "ifd": {
+            "$id": "/schemas/ifd",
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "subfile_type": {
+                    "type": "string"
+                },
+                "image_width": {
+                    "type": "integer"
+                },
+                "image_length": {
+                    "type": "integer"
+                },
+                "bits_per_sample": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "compression": {
+                    "type": "string"
+                },
+                "photometric_interpretation": {
+                    "type": "string"
+                },
+                "strip_offsets": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "samples_per_pixel": {
+                    "type": "integer"
+                },
+                "rows_per_strip": {
+                    "type": "integer"
+                },
+                "strip_byte_counts": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "x_resolution": {
+                    "type": "number"
+                },
+                "y_resolution": {
+                    "type": "number"
+                },
+                "planar_configuration": {
+                    "type": "string"
+                },
+                "resolution_unit": {
+                    "type": "string"
+                },
+                "make": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "orientation": {
+                    "type": "string"
+                },
+                "software": {
+                    "type": "string"
+                },
+                "date_time": {},
+                "artist": {
+                    "type": "string"
+                },
+                "sub_if_ds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "default": []
+                },
+                "reference_black_white": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "default": []
+                },
+                "application_notes": {
+                    "type": "array",
+                    "default": []
+                },
+                "copyright": {
+                    "type": "string"
+                },
+                "exif_offset": {
+                    "type": "integer"
+                },
+                "gps_info": {
+                    "type": "integer"
+                },
+                "date_time_original": {
+                    "type": "string"
+                },
+                "tiffep_standard_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "default": []
+                },
+                "sensing_method": {
+                    "type": "string"
+                },
+                "thumbnail_offset": {
+                    "type": "integer"
+                },
+                "thumbnail_length": {
+                    "type": "integer"
+                },
+                "exif": {
+                    "$ref": "#/definitions/exifIfd"
+                },
+                "gps": {
+                    "$ref": "#/definitions/gpsIfd"
+                },
+                "maker_note": {
+                    "$ref": "#/definitions/makerNote"
+                }
+            },
+            "patternProperties": {
+                "^sub_ifd[0-9]$": { "$ref": "/schemas/imageIfd" }
+            },
+            "required": []
+        },
+        "exifIfd": {
+            "$id": "/schemas/exifIfd",
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "exposure_time": {
+                    "type": "number"
+                },
+                "f_number": {
+                    "type": "number"
+                },
+                "exposure_program": {
+                    "type": "string"
+                },
+                "photographic_sensitivity": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "sensitivity_type": {
+                    "type": "string"
+                },
+                "recommended_exposure_index": {
+                    "type": "integer"
+                },
+                "date_time_original": {
+                    "type": "string"
+                },
+                "date_time_digitized": {
+                    "type": "string"
+                },
+                "offset_time": {
+                    "type": "string"
+                },
+                "offset_time_original": {
+                    "type": "string"
+                },
+                "offset_time_digitized": {
+                    "type": "string"
+                },
+                "exposure_bias_value": {
+                    "type": "number"
+                },
+                "max_aperture_value": {
+                    "type": "number"
+                },
+                "metering_mode": {
+                    "type": "string"
+                },
+                "light_source": {
+                    "type": "string"
+                },
+                "flash": {
+                    "type": "string"
+                },
+                "focal_length": {
+                    "type": "number"
+                },
+                "user_comment": {
+                    "type": "string"
+                },
+                "sub_sec_time": {
+                    "type": "string"
+                },
+                "sub_sec_time_original": {
+                    "type": "string"
+                },
+                "sub_sec_time_digitized": {
+                    "type": "string"
+                },
+                "sensing_method": {
+                    "type": "string"
+                },
+                "file_source": {
+                    "type": "string"
+                },
+                "scene_type": {
+                    "type": "string"
+                },
+                "cva_pattern": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "custom_rendered": {
+                    "type": "string"
+                },
+                "exposure_mode": {
+                    "type": "string"
+                },
+                "white_balance": {
+                    "type": "string"
+                },
+                "focal_length_in_35mm_film": {
+                    "type": "integer"
+                },
+                "scene_capture_type": {
+                    "type": "string"
+                },
+                "gain_control": {
+                    "type": "string"
+                },
+                "contrast": {
+                    "type": "string"
+                },
+                "saturation": {
+                    "type": "string"
+                },
+                "sharpness": {
+                    "type": "string"
+                },
+                "subject_distance_range": {
+                    "type": "string"
+                }
+            },
+            "required": []
+        },
+        "gpsIfd": {
+            "$id": "/schemas/gpsIfd",
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "gps_version_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "gps_latitude_ref": {
+                    "type": "string"
+                },
+                "gps_latitude": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "gps_longitude_ref": {
+                    "type": "string"
+                },
+                "gps_longitude": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "gps_altitude_ref": {
+                    "type": "integer"
+                },
+                "gps_altitude": {
+                    "type": "number"
+                },
+                "gps_time_stamp": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "gps_satellites": {
+                    "type": "string"
+                },
+                "gps_map_datum": {
+                    "type": "string"
+                },
+                "gps_date": {
+                    "type": "string"
+                }
+            },
+            "required": []
+        },
+        "imageIfd": {
+            "$id": "/schemas/imageIfd",
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "subfile_type": {
+                    "type": "string"
+                },
+                "compression": {
+                    "type": "string"
+                },
+                "image_width": {
+                    "type": "integer"
+                },
+                "image_length": {
+                    "type": "integer"
+                },
+                "bits_per_sample": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "photometric_interpretation": {
+                    "type": "string"
+                },
+                "strip_offsets": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "samples_per_pixel": {
+                    "type": "integer"
+                },
+                "rows_per_strip": {
+                    "type": "integer"
+                },
+                "strip_byte_counts": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "x_resolution": {
+                    "type": "number"
+                },
+                "y_resolution": {
+                    "type": "number"
+                },
+                "planar_configuration": {
+                    "type": "string"
+                },
+                "resolution_unit": {
+                    "type": "string"
+                },
+                "thumbnail_offset": {
+                    "type": "integer"
+                },
+                "thumbnail_length": {
+                    "type": "integer"
+                },
+                "cfa_repeat_pattern_dim": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "default": []
+                },
+                "y_cb_cr_positioning": {
+                    "type": "string"
+                }
+            },
+            "required": []
+        },
+        "makerNote": {
+            "$id": "/schemas/makerNote",
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "patternProperties": {
+                "^.+$": {}
+            },
+            "required": []
+        }
+    }
+}
