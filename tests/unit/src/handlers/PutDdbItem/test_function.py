@@ -17,46 +17,12 @@ EVENT_DIR = os.path.join(DATA_DIR, 'events')
 IMAGE_DIR = os.path.join(DATA_DIR, 'images')
 MODEL_DIR = os.path.join(DATA_DIR, 'models')
 
-@pytest.fixture(params=[
-    'test_image_nikon.NEF',
-    'test_image_lightroom_nikon.dng',
-    'test_image_lightroom_nikon_embedded_raw.dng',
-    'test_image_lightroom_nikon.tif',
-])
-def image(request):
-    '''Return an image file object'''
-    return open(os.path.join(IMAGE_DIR, request.param), 'rb')
 
-
-@pytest.fixture()
-def exif_data(image):
-    '''Return EXIF data for an image'''
-    image.seek(0)
-    hdr = exifread.ExifHeader(image)
-    exif_data = hdr.dump_tag_values()
-    # MakerNote data can be big
-    if exif_data.get('IFD0') is not None:
-        if exif_data.get('IFD0').get('EXIF') is not None:
-            if exif_data.get('IFD0').get('EXIF').get('MakerNote') is not None:
-                del exif_data['IFD0']['EXIF']['MakerNote']
-    return exif_data
-
-
-@pytest.fixture()
-def item(exif_data):
-    '''Return DDB item'''
-    item = {
-        'pk': 'bucket#object',
-        'sk': 'exif#v0',
-        'Exif': exif_data
-    }
-    return item
-
-
-@pytest.fixture()
-def event(item):
-    '''return a test event'''
-    return {'Item': item}
+@pytest.fixture(params=['PutDdbItem-event-eb.json'])
+def event(request):
+    '''Return a test event'''
+    with open(os.path.join(EVENT_DIR, request.param)) as f:
+        return json.load(f)
 
 
 ### AWS clients
