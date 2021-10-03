@@ -134,6 +134,7 @@ class Ifd:
     tiffep_standard_id: Optional[List[int]] = field(default=None, metadata=config(field_name="TIFF/EPStandardID"))
     thumbnail_offset: Optional[str] = None
     thumbnail_length: Optional[str] = None
+    image_number: Optional[int] = None
 
     exif_ifd: Optional[ExifIfd] = field(default=None, metadata=config(field_name="ExifIFD"))
     gps_ifd: Optional[GpsIfd] = field(default=None, metadata=config(field_name="GpsIFD"))
@@ -142,6 +143,7 @@ class Ifd:
     sub_ifd1: Optional[ImageIfd] = field(default=None, metadata=config(field_name="SubIFD1"))
     sub_ifd2: Optional[ImageIfd] = field(default=None, metadata=config(field_name="SubIFD2"))
     sub_ifd3: Optional[ImageIfd] = field(default=None, metadata=config(field_name="SubIFD3"))
+    sub_ifd4: Optional[ImageIfd] = field(default=None, metadata=config(field_name="SubIFD4"))
 
     def __post_init__(self):
         # NOTE: Don't need because dataclass_json handles this for us.

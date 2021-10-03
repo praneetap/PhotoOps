@@ -49,6 +49,7 @@
                 "copyright": "",
                 "exif_offset": 12904,
                 "gps_info": 179128,
+                "image_number": null,
                 "date_time_original": "2020:12:13 20:16:35",
                 "tiffep_standard_id": [
                     1,
@@ -2364,7 +2365,8 @@
                     "sensing_method": null,
                     "y_cb_cr_positioning": "Co-sited"
                 },
-                "sub_ifd3": null
+                "sub_ifd3": null,
+                "sub_ifd4": null
             }
         }
     }
