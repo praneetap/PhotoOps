@@ -36,27 +36,20 @@ def event_schema():
 
 @pytest.fixture(params=[
     'test_image_nikon.NEF',
+    'test_image_lightroom_nikon.jpg',
     'test_image_lightroom_nikon.dng',
     'test_image_lightroom_nikon_embedded_raw.dng',
     'test_image_lightroom_nikon.tif',
 ])
-def image(request):
+def image_name(request):
     '''Return an image file object'''
-    return open(os.path.join(IMAGE_DIR, request.param), 'rb')
+    return request.param
 
 
 @pytest.fixture()
-def exif_data(image):
-    '''Return EXIF data for an image'''
-    image.seek(0)
-    hdr = exifread.ExifHeader(image)
-    exif_data = hdr.dump_tag_values()
-    # MakerNote data can be big
-    if exif_data.get('IFD0') is not None:
-        if exif_data.get('IFD0').get('EXIF') is not None:
-            if exif_data.get('IFD0').get('EXIF').get('MakerNote') is not None:
-                del exif_data['IFD0']['EXIF']['MakerNote']
-    return exif_data
+def image(image_name):
+    '''Return an image file object'''
+    return open(os.path.join(IMAGE_DIR, image_name), 'rb')
 
 
 @pytest.fixture()
@@ -71,10 +64,11 @@ def s3_object_key(event):
     return event['Records'][0]['s3']['object']['key']
 
 
-@pytest.fixture(params=['GetExifData-output.json'])
-def expected_response(request):
+@pytest.fixture()
+def expected_response(image_name):
     '''Return a test event'''
-    with open(os.path.join(EVENT_DIR, request.param)) as f:
+    file_name = 'GetExifData-output-{}.json'.format(image_name)
+    with open(os.path.join(EVENT_DIR, file_name)) as f:
         return json.load(f)
 
 
@@ -133,7 +127,8 @@ def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_
     # FIXME: How do we handle pictures
     image.seek(0)
     s3_client.upload_fileobj(image, s3_bucket_name, s3_object_key)
-    image.seek(0)
+    # FIXME: Looks like exifread closes JPGs biut not others. Should figure that out.
+    #image.seek(0)
 
     resp = func.handler(event, {})
     assert asdict(resp) == expected_response

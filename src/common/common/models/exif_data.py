@@ -10,7 +10,7 @@ from inflection import underscore
 from json import dumps
 
 from inflection import underscore
-from json_to_models.dynamic_typing import IntString, IsoTimeString
+from json_to_models.dynamic_typing import FloatString, IntString, IsoTimeString
 from typing import Any, List, Optional, Union
 
 
@@ -34,6 +34,8 @@ class Ifd:
         offset_time: Optional[IsoTimeString] = None
         offset_time_original: Optional[IsoTimeString] = None
         offset_time_digitized: Optional[IsoTimeString] = None
+        shutter_speed_value: Optional[float] = None
+        aperture_value: Optional[float] = None
         exposure_bias_value: Optional[float] = None
         max_aperture_value: Optional[float] = None
         metering_mode: Optional[str] = None
@@ -44,6 +46,9 @@ class Ifd:
         sub_sec_time: Optional[IntString] = None
         sub_sec_time_original: Optional[IntString] = None
         sub_sec_time_digitized: Optional[IntString] = None
+        focal_plane_x_resolution: Optional[float] = None
+        focal_plane_y_resolution: Optional[float] = None
+        focal_plane_resolution_unit: Optional[int] = None
         sensing_method: Optional[str] = None
         file_source: Optional[str] = None
         scene_type: Optional[str] = None
@@ -58,6 +63,20 @@ class Ifd:
         saturation: Optional[str] = None
         sharpness: Optional[str] = None
         subject_distance_range: Optional[str] = None
+        exif_version: Optional[str] = None
+        components_configuration: Optional[List[int]] = None
+        compressed_bits_per_pixel: Optional[float] = None
+        brightness_value: Optional[float] = None
+        flash_pix_version: Optional[str] = None
+        color_space: Optional[str] = None
+        pixel_x_dimension: Optional[int] = None
+        pixel_y_dimension: Optional[int] = None
+        interoperability_offset: Optional[float] = None
+        digital_zoom_ratio: Optional[float] = None
+        body_serial_number: Optional[str] = None
+        lens_specification: Optional[List[int]] = None
+        lens_model: Optional[str] = None
+
         maker_note: Optional[List[int]] = field(default=None, metadata=config(field_name="MakerNote"))
 
 
@@ -96,13 +115,59 @@ class Ifd:
         y_resolution: Optional[float] = None
         planar_configuration: Optional[str] = None
         resolution_unit: Optional[str] = None
+        tile_width: Optional[int] = None
+        tile_length: Optional[int] = None
+        tile_offsets: Optional[Union[List[int], int]] = None
+        tile_byte_counts: Optional[Union[List[int], int]] = None
         thumbnail_offset: Optional[int] = None
         thumbnail_length: Optional[int] = None
         cfa_repeat_pattern_dim: Optional[List[int]] = field(default=None, metadata=config(field_name="CFARepeatPatternDim"))
         cfa_pattern2: Optional[List[int]] = field(default=None, metadata=config(field_name="CFAPattern2"))
         sensing_method: Optional[str] = field(default=None, metadata=config(field_name="SensingMethod"))
+        y_cb_cr_coefficients: Optional[List[float]] = None
+        y_cb_cr_sub_sampling: Optional[List[int]] = None
         y_cb_cr_positioning: Optional[str] = None
+        reference_black_white: Optional[List[float]] = None
+        preview_application_name: Optional[str] = None
+        preview_application_version: Optional[FloatString] = None
+        preview_settings_digest: Optional[List[int]] = None
+        preview_color_space: Optional[str] = None
+        preview_date_time: Optional[IsoTimeString] = None
+        sony_raw_file_type: Optional[str] = None
+        sony_tone_curve: Optional[List[int]] = None
+        chromatic_aberration_correction: Optional[str] = None
+        chromatic_aberration_corr_params: Optional[List[int]] = None
+        vignetting_correction: Optional[str] = None
+        vignetting_corr_params: Optional[List[int]] = None
+        distortion_corr_params: Optional[List[int]]= None
+        cfa_plane_color: Optional[List[int]] = field(default=None, metadata=config(field_name="CFAPlaneColor"))
+        cfa_layout: Optional[int] = field(default=None, metadata=config(field_name="CFALayout"))
+        black_level: Optional[List[float]] = None
+        black_level_repeat_dim: Optional[List[int]] = None
+        lack_level_repeat_dim: Optional[List[int]] = None
+        white_level: Optional[int] = None
+        default_scale: Optional[List[float]] = None
+        default_crop_origin: Optional[int] = None
+        default_crop_size: Optional[List[int]] = None
+        bayer_green_split: Optional[int] = None
+        anti_alias_strength: Optional[List[float]] = None
+        best_quality_scale: Optional[float] = None
+        active_area: Optional[List[int]] = None
+        noise_profile: Optional[List[float]] = None
+        sony_crop_top_left: Optional[List[int]] = None
+        distortion_correction: Optional[str] = None
+        opcode_list_1: Optional[List[int]] = field(default=None, metadata=config(field_name="OpcodeList1"))
+        opcode_list_2: Optional[List[int]] = field(default=None, metadata=config(field_name="OpcodeList2"))
+        opcode_list_3: Optional[List[int]] = field(default=None, metadata=config(field_name="OpcodeList3"))
+        cache_version: Optional[int] = None
 
+        # Unknown
+        tag0x7001: Optional[List[int]] = None
+        tag0x7011: Optional[List[int]] = None
+        tag0x7020: Optional[List[int]] = None
+        tag0x7310: Optional[List[int]] = None
+        tag0x7313: Optional[List[int]] = None
+        tag0x7316: Optional[List[int]] = None
 
     subfile_type: Optional[str] = None
     image_width: Optional[int] = None
@@ -125,16 +190,66 @@ class Ifd:
     date_time: Optional[IsoTimeString] = None
     artist: Optional[str] = None
     sub_ifds: Optional[List[int]] = field(default_factory=list, metadata=config(field_name="SubIFDs"))
-    reference_black_white: Optional[List[float]] = field(default_factory=list)
+    reference_black_white: Optional[List[float]] = None
     application_notes: Optional[List[Any]] = field(default_factory=list)
     copyright: Optional[str] = None
     exif_offset: Optional[int] = None
+    icc_profile: Optional[List[int]] = field(default=None, metadata=config(field_name="InterColorProfile"))
     gps_info: Optional[int] = field(default=None, metadata=config(field_name="GPSInfo"))
     date_time_original: Optional[IsoTimeString] = None
     tiffep_standard_id: Optional[List[int]] = field(default=None, metadata=config(field_name="TIFF/EPStandardID"))
     thumbnail_offset: Optional[str] = None
     thumbnail_length: Optional[str] = None
     image_number: Optional[int] = None
+    iptc_naa: Optional[int] = field(default=None, metadata=config(field_name="IPTC/NAA"))
+    photoshop_settings: Optional[List[int]] = None
+    y_cb_cr_positioning: Optional[str] = None
+    print_im: Optional[List[int]] = field(default=None, metadata=config(field_name="PrintIM"))
+    image_description: Optional[int] = None
+    dng_adobe_data: Optional[int] = field(default=None, metadata=config(field_name="DNGAdobeData"))
+    dng_version: Optional[List[int]] = field(default=None, metadata=config(field_name="DNGVersion"))
+    dng_backward_version: Optional[List[int]] = field(default=None, metadata=config(field_name="DNGBackwardVersion"))
+    unique_camera_model: Optional[str] = None
+    color_matrix1: Optional[List[float]] = None
+    color_matrix2: Optional[List[float]] = None
+    camera_calibration1: Optional[List[float]] = None
+    camera_calibration2: Optional[List[float]] = None
+    analog_balance: Optional[List[float]] = None
+    as_shot_neutral: Optional[List[float]] = None
+    baseline_exposure: Optional[float] = None
+    baseline_noise: Optional[float] = None
+    baseline_sharpness: Optional[float] = None
+    linear_response_limit: Optional[float] = None
+    camera_serial_number: Optional[int] = None
+    dng_lens_info: Optional[List[float]] = field(default=None, metadata=config(field_name="DNGLensInfo"))
+    shadow_scale: Optional[List[float]] = None
+    calibration_illuminant1: Optional[int] = None
+    calibration_illuminant2: Optional[int] = None
+    raw_data_unique_id: Optional[List[int]] = field(default=None, metadata=config(field_name="RawDataUniqueID"))
+    original_raw_file_name: Optional[str]= None
+    camera_calibration_sig: Optional[str] = None
+    profile_calibration_sig: Optional[str] = None
+    profile_name: Optional[str] = None
+    profile_hue_sat_map_dims: Optional[List[int]] = None
+    profile_hue_sat_map_data1: Optional[List[float]] = None
+    profile_hue_sat_map_data2: Optional[List[float]] = None
+    profile_embed_policy: Optional[str] = None
+    profile_copyright: Optional[str] = None
+    forward_matrix1: Optional[List[float]] = None
+    forward_matrix2: Optional[List[float]] = None
+    preview_application_name: Optional[str] = None
+    preview_application_version: Optional[FloatString] = None
+    preview_settings_digest: Optional[List[int]] = None
+    preview_color_space: Optional[str] = None
+    preview_date_time: Optional[IsoTimeString] = None
+    profile_look_table_dims: Optional[List[int]] = None
+    profile_look_table_data: Optional[List[float]] = None
+    noise_profile: Optional[List[float]] = None
+    new_raw_image_digest: Optional[List[int]] = None
+
+    # Unknown
+    tag0x7316: Optional[List[int]] = None
+
 
     exif_ifd: Optional[ExifIfd] = field(default=None, metadata=config(field_name="ExifIFD"))
     gps_ifd: Optional[GpsIfd] = field(default=None, metadata=config(field_name="GpsIFD"))
@@ -157,7 +272,8 @@ class Ifd:
             if _k.startswith('sub_ifd') and isinstance(self.__dict__[_k], dict):
                 self.__dict__[_k] = self.ImageIfd(**self.__dict__[_k])
 
-        self.maker_note = self.make_maker_note(**self.maker_note)
+        if self.maker_note is not None:
+            self.maker_note = self.make_maker_note(**self.maker_note)
 
     def make_maker_note(self, **kwargs):
         '''Make a MakerNote dataclass'''
