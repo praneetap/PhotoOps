@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
         "IFD0": { "$ref": "/schemas/ifd" }
@@ -13,7 +13,7 @@
     "$defs": {
         "ifd": {
             "$id": "/schemas/ifd",
-            "$schema": "http://json-schema.org/schema#",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "subfile_type": {
@@ -146,7 +146,7 @@
         },
         "exifIfd": {
             "$id": "/schemas/exifIfd",
-            "$schema": "http://json-schema.org/schema#",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "exposure_time": {
@@ -265,7 +265,7 @@
         },
         "gpsIfd": {
             "$id": "/schemas/gpsIfd",
-            "$schema": "http://json-schema.org/schema#",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "gps_version_id": {
@@ -318,7 +318,7 @@
         },
         "imageIfd": {
             "$id": "/schemas/imageIfd",
-            "$schema": "http://json-schema.org/schema#",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "subfile_type": {
@@ -393,7 +393,7 @@
         },
         "makerNote": {
             "$id": "/schemas/makerNote",
-            "$schema": "http://json-schema.org/schema#",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "patternProperties": {
                 "^.+$": {}
