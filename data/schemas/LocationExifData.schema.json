@@ -32,7 +32,7 @@
         "gps_altitude": {
             "type": "number"
         },
-        "gps_timestamp": {
+        "gps_time_stamp": {
             "type": "array",
             "items": {
                 "type": "number"

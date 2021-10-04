@@ -1,6 +1,6 @@
 {
   "Item": {
-    "pk": "bucket#key",
+    "pk": "photoopsai-bucket#images/example.raw",
     "sk": "camera#v0",
     "make": "NIKON CORPORATION",
     "model": "NIKON D7500",

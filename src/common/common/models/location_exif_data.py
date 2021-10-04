@@ -20,7 +20,7 @@ class LocationExifData:
     gps_longitude: Optional[List[float]]
     gps_altitude_ref: Optional[int]
     gps_altitude: Optional[float]
-    gps_timestamp: Optional[List[float]]
+    gps_time_stamp: Optional[List[float]]
     gps_satellites: Optional[IntString]
     gps_map_datum: Optional[str]
     gps_date: Optional[str]

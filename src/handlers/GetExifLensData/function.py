@@ -5,10 +5,10 @@ import logging
 import os
 
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import LensExifData, LensExifDataItem, PutDdbItemAction
+from common import ExifDataItem, Ifd, LensExifData, LensExifDataItem, PutDdbItemAction
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -22,9 +22,9 @@ class Response(PutDdbItemAction):
     Item: LensExifDataItem
 
 
-def _get_lens_focal_attrs(ifd: dict) -> Dict[str, Union[int, float, None]]:
+def _get_lens_focal_attrs(ifd: Ifd) -> Dict[str, Union[int, float, None]]:
     '''Return lens focal attributes'''
-    focal_attrs = ifd.get('MakerNote',{}).get('LensMinMaxFocalMaxAperture')
+    focal_attrs = ifd.maker_note.lens_min_max_focal_max_aperture
     return {
         'min_focal': int(focal_attrs[0]),
         'max_focal': int(focal_attrs[1]),
@@ -35,16 +35,16 @@ def _get_lens_focal_attrs(ifd: dict) -> Dict[str, Union[int, float, None]]:
 
 
 
-def _get_exif_lens_data(event: dict) -> LensExifData:
+def _get_exif_lens_data(exif_data: ExifDataItem) -> LensExifData:
     '''Return normalized lens data'''
-    ifd = event.get('Exif', {}).get('IFD0', {})
+    ifd = cast(Ifd, exif_data.exif.ifd0)
 
     lens_data = {
         **_get_lens_focal_attrs(ifd)
     }
 
     lens_data['lens_maker_type'] = []
-    lens_data['camera_maker_type'] = ifd.get('MakerNote', {}).get('LensType', '').split(' ')
+    lens_data['camera_maker_type'] = ifd.maker_note.lens_type.split(' ')
 
     lens_data['auto_focus'] = True if lens_data['camera_maker_type'][0] == 'AF' else False
     lens_data['vibration_reduction'] = True if 'VR' in lens_data['camera_maker_type'] else False
@@ -65,7 +65,8 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
 
     pk = event.get('pk')
     sk = 'lens#v0'
-    lens_data = _get_exif_lens_data(event)
+    exif_data = ExifDataItem(**event)
+    lens_data = _get_exif_lens_data(exif_data)
     lens_data_item = LensExifDataItem(
         **{
             'pk': pk,

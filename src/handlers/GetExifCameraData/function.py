@@ -5,11 +5,11 @@ import logging
 import os
 
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from common import CameraExifData, CameraExifDataItem, PutDdbItemAction
+from common import CameraExifData, CameraExifDataItem, ExifDataItem, Ifd, PutDdbItemAction
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -23,15 +23,17 @@ class Response(PutDdbItemAction):
     Item: CameraExifDataItem
 
 
-def _get_exif_camera_data(event: dict) -> CameraExifData:
+def _get_exif_camera_data(exif_data: ExifDataItem) -> CameraExifData:
     '''Return normalized camera data'''
+
+    ifd0 = cast(Ifd, exif_data.exif.ifd0)
 
     camera_data = CameraExifData(
         **{
-            'make': event.get('Exif', {}).get('IFD0', {}).get('Make'),
-            'model': event.get('Exif', {}).get('IFD0', {}).get('Model'),
-            'software': event.get('Exif', {}).get('IFD0', {}).get('Software'),
-            'serial_number': event.get('Exif', {}).get('IFD0', {}).get('MakerNote', {}).get('SerialNumber')
+            'make': ifd0.make,
+            'model': ifd0.model,
+            'software': ifd0.software,
+            'serial_number': None if ifd0.maker_note is None else ifd0.maker_note.serial_number
         }
     )
 
@@ -44,7 +46,8 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
 
     pk = event.get('pk')
     sk = 'camera#v0'
-    camera_data = _get_exif_camera_data(event)
+    exif_data = ExifDataItem(**event)
+    camera_data = _get_exif_camera_data(exif_data)
     camera_data_item = CameraExifDataItem(
         **{
             'pk': pk,

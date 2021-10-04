@@ -1,6 +1,6 @@
 {
   "Item": {
-    "pk": "bucket#key",
+    "pk": "photoopsai-bucket#images/example.raw",
     "sk": "location#v0",
     "gps_version_id": [
       2,
@@ -22,7 +22,7 @@
     ],
     "gps_altitude_ref": 0,
     "gps_altitude": 193.0,
-    "gps_timestamp": [
+    "gps_time_stamp": [
       5.0,
       25.0,
       8.5

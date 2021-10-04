@@ -1,9 +1,9 @@
 {
   "Item": {
-    "pk": "bucket#key.nef",
+    "pk": "photoopsai-bucket#images/example.new",
     "sk": "image#v0",
 
-    "file_type": "NEF",
+    "file_type": "NEW",
     "compression": "Nikon NEF Compressed",
     "jpeg": false,
 
@@ -11,16 +11,16 @@
     "width": 5600,
     "orientation": "Horizontal (normal)",
 
-    "datetime": "2021:09:13 00:29:04",
-    "datetime_offset": "-05:00",
+    "date_time": "2020:12:13 20:16:35",
+    "date_time_offset": "-05:00",
 
     "auto_focus": true,
     "exposure_mode": "Manual Exposure",
     "exposure_program": "Manual",
-    "exposure_time": 5.0,
+    "exposure_time": 0.125,
     "flash": "Flash did not fire, compulsory flash mode",
-    "fnumber": 16.0,
-    "focal_length": 50.0,
+    "fnumber": 5.6,
+    "focal_length": 50,
     "focal_length_in_35mm_film": 75,
     "photographic_sensitivity": [ 100 ],
     "light_source": "Unknown",

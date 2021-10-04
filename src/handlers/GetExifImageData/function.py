@@ -1,15 +1,15 @@
 '''Return normalized Image EXIF data'''
 
+import copy
 import json
 import logging
 import os
 
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, Tuple, Union
-from xmlrpc.client import Boolean
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import ImageExifData, ImageExifDataItem, PutDdbItemAction
+from common import ExifDataItem, Ifd, ImageExifData, ImageExifDataItem, PutDdbItemAction
 
 
 # FIXME: Replace with powertools logger
@@ -41,11 +41,10 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
     width = None
     orientation = None
     compression = None
-    is_jpeg = True  # JPEGs are a crapshoot for having dimension info so assume is JPEG until 
+    is_jpeg = True  # JPEGs are a crapshoot for having dimension info so assume is JPEG until
                     # shown otherwise.
 
     for _k in exif:
-        #print(_k)
         if None not in [length, width, orientation, compression]:
             break
 
@@ -63,41 +62,42 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
                 is_jpeg = values[4]
         else:
             # Sometimes the JPEG thumbnails set ImageWidth and ImageLength.
-            if _k in ['ImageWidth', 'ImageLength'] and exif.get('SubfileType') == 'Full-resolution image':
-                compression = exif.get('Compression')
+            if _k in ['image_width', 'image_length'] and exif.get('subfile_type') == 'Full-resolution image':
+                compression = exif.get('compression')
                 is_jpeg = False
-                if _k == 'ImageWidth':
-                    width = exif.get('ImageWidth')
-                elif _k == 'ImageLength':
-                    length = exif.get('ImageLength')
-            elif _k in ['PixelXDimension', 'PixelYDimension']:
-                compression = exif.get('Compression')
-                if _k == 'PixelXDimension':
-                    width = exif.get('PixelXDimension')
-                elif _k == 'PixelYDimension':
-                    length = exif.get('PixelYDimension')
-            elif _k == 'Orientation':
-                orientation = exif.get('Orientation')
+                if _k == 'image_width':
+                    width = exif.get('image_width')
+                elif _k == 'image_length':
+                    length = exif.get('image_length')
+            elif _k in ['pixel_x_dimension', 'pixel_y_dimension']:
+                compression = exif.get('compression')
+                if _k == 'pixel_x_dimension':
+                    width = exif.get('pixel_x_dimension')
+                elif _k == 'pixel_y_dimension':
+                    length = exif.get('pixel_y_dimension')
+            elif _k == 'orientation':
+                orientation = exif.get('orientation')
 
     return (length, width, orientation, compression, is_jpeg)
 
 
-def _get_exif_image_data(event: Dict[str, Any]) -> ImageExifData:
+def _get_exif_image_data(exif_item: ExifDataItem) -> ImageExifData:
     '''Return normalized image data'''
 
-    exif = event.get('Exif', {})
-    ifd0 = exif.get('IFD0', {})
+    ifd0 = exif_item.exif.ifd0
+
+    length, width, orientation, compression, is_jpeg = _get_image_info(asdict(exif_item))
+
+    #ifd0 = cast(Ifd, exif_item.exif.ifd0)
     image_data: Dict[str, Any] = {}
 
-    length, width, orientation, compression, is_jpeg = _get_image_info(exif)
     image_data['length'] = length
     image_data['width'] = width
     image_data['orientation'] = orientation
     image_data['compression'] = compression
     image_data['jpeg'] = is_jpeg
 
-    file_split = event.get('pk', '').split('.')
-    print(file_split)
+    file_split = exif_item.pk.split('.')
     if len(file_split) == 1:
         image_data['file_type'] = 'UNKNOWN'
     else:
@@ -111,35 +111,36 @@ def _get_exif_image_data(event: Dict[str, Any]) -> ImageExifData:
 
     # NOTE: DateTime is complicated. We should check for discrepancies between all the
     # locations and decide what to use when.
-    image_data['datetime'] = ifd0.get('DateTime')
-    image_data['datetime_offset'] = ifd0.get('EXIF', {}).get('OffsetTime')
+    image_data['date_time'] = ifd0.date_time
+    image_data['date_time_offset'] = ifd0.exif_ifd.offset_time
 
-    image_data['auto_focus'] = True if ifd0.get('MakerNote', {}).get('FocusMode', '').startswith('AF') else False   # Note: varies by brand.
-    image_data['exposure_mode'] = ifd0.get('EXIF', {}).get('ExposureMode')
-    image_data['exposure_program'] = ifd0.get('EXIF', {}).get('ExposureProgram')
-    image_data['exposure_time'] = ifd0.get('EXIF', {}).get('ExposureTime')
-    image_data['flash'] = ifd0.get('EXIF', {}).get('Flash')
-    image_data['fnumber'] = ifd0.get('EXIF', {}).get('FNumber')
-    image_data['focal_length'] = ifd0.get('EXIF', {}).get('FocalLength')
-    image_data['focal_length_in_35mm_film'] = ifd0.get('EXIF', {}).get('FocalLengthIn35mmFilm')
+    image_data['auto_focus'] = True if ifd0.maker_note.focus_mode.startswith('AF') else False
+    # Note: varies by brand.
+    image_data['exposure_mode'] = ifd0.exif_ifd.exposure_mode
+    image_data['exposure_program'] = ifd0.exif_ifd.exposure_program
+    image_data['exposure_time'] = ifd0.exif_ifd.exposure_time
+    image_data['flash'] = ifd0.exif_ifd.flash
+    image_data['fnumber'] = ifd0.exif_ifd.f_number
+    image_data['focal_length'] = ifd0.exif_ifd.focal_length
+    image_data['focal_length_in_35mm_film'] = ifd0.exif_ifd.focal_length_in_35mm_film
     # ISO
     # NOTE: These two tags are related but I don't know what variations exist. Also my favorite
     # line from the spec:
     #
     # "While 'Count = Any', only 1 should be used"
-    image_data['photographic_sensitivity'] = ifd0.get('EXIF', {}).get('PhotographicSensitivity', [])
-    image_data['sensitivity_type'] = ifd0.get('EXIF', {}).get('SensitivityType')
+    image_data['photographic_sensitivity'] = ifd0.exif_ifd.photographic_sensitivity
+    image_data['sensitivity_type'] = ifd0.exif_ifd.sensitivity_type
 
-    image_data['light_source'] = ifd0.get('EXIF', {}).get('LightSource')
-    image_data['metering_mode'] = ifd0.get('EXIF', {}).get('MeteringMode')
-    image_data['sensing_method'] = ifd0.get('EXIF', {}).get('SensingMethod')
+    image_data['light_source'] = ifd0.exif_ifd.light_source
+    image_data['metering_mode'] = ifd0.exif_ifd.metering_mode
+    image_data['sensing_method'] = ifd0.exif_ifd.sensing_method
 
-    image_data['contrast'] = ifd0.get('EXIF', {}).get('Contrast')
-    image_data['gain_control'] = ifd0.get('EXIF', {}).get('GainControl')
-    image_data['saturation'] = ifd0.get('EXIF', {}).get('Saturation')
-    image_data['sharpness'] = ifd0.get('EXIF', {}).get('Sharpness')
-    image_data['subject_distance_range'] = ifd0.get('EXIF', {}).get('SubjectDistanceRange')
-    image_data['white_balance'] = ifd0.get('EXIF', {}).get('WhiteBalance')
+    image_data['contrast'] = ifd0.exif_ifd.contrast
+    image_data['gain_control'] = ifd0.exif_ifd.gain_control
+    image_data['saturation'] = ifd0.exif_ifd.saturation
+    image_data['sharpness'] = ifd0.exif_ifd.sharpness
+    image_data['subject_distance_range'] = ifd0.exif_ifd.subject_distance_range
+    image_data['white_balance'] = ifd0.exif_ifd.white_balance
 
     return ImageExifData(**image_data)
 
@@ -150,7 +151,8 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
 
     pk = event.get('pk')
     sk = 'image#v0'
-    image_data = _get_exif_image_data(event)
+    exif_item = ExifDataItem(**event)
+    image_data = _get_exif_image_data(exif_item)
     image_data_item = ImageExifDataItem(
         **{
             'pk': pk,

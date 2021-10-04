@@ -1,6 +1,6 @@
 {
   "Item": {
-    "pk": "bucket#key",
+    "pk": "photoopsai-bucket#images/example.raw",
     "sk": "lens#v0",
     "make": null,
     "model": null,
@@ -13,7 +13,7 @@
     "auto_focus": true,
     "vibration_reduction": false,
     "lens_maker_type": [],
-    "camera_maker_type": ["AF", "G"],
+    "camera_maker_type": ["AF", "D"],
     "macro": null,
     "zoom": false
   }

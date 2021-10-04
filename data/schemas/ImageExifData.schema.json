@@ -20,10 +20,10 @@
         "orientation": {
             "type": "string"
         },
-        "datetime": {
+        "date_time": {
             "type": "string"
         },
-        "datetime_offset": {
+        "date_time_offset": {
             "type": "string"
         },
         "auto_focus": {
