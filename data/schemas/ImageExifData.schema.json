@@ -2,6 +2,13 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^image#v[0-9]+$"
+        },
         "file_type": {
             "type": "string"
         },
@@ -87,5 +94,38 @@
             "type": "string"
         }
     },
-    "required": []
+    "required": [
+       "file_type",
+        "compression",
+        "jpeg",
+        "length",
+        "width",
+        "orientation",
+        "date_time",
+        "date_time_offset",
+        "auto_focus",
+        "exposure_mode",
+        "exposure_program",
+        "exposure_time",
+        "flash",
+        "fnumber",
+        "focal_length",
+        "focal_length_in_35mm_film",
+        "photographic_sensitivity",
+        "light_source",
+        "metering_mode",
+        "sensing_method",
+        "sensitivity_type",
+        "contrast",
+        "gain_control",
+        "saturation",
+        "sharpness",
+        "subject_distance_range",
+        "white_balance"
+    ],
+    "additionalProperties": false,
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    }
 }

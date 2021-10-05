@@ -1,12 +1,23 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/response",
     "type": "object",
     "properties": {
         "Item": {
-            "$schema": "./ExifDataItem.schema.json"
+            "$ref": "#/$defs/item"
         }
     },
     "required": [
         "Item"
-    ]
+    ],
+    "additionalProperties": false,
+    "$defs": {
+        "item": {
+            "$schema": "file:data/schemas/ExifDataItem.schema.json",
+            "required": [
+                "pk",
+                "sk"
+            ]
+        }
+    }
 }

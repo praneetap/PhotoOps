@@ -1,7 +1,15 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/lensData",
     "type": "object",
     "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^lens#v[0-9]+$"
+        },
         "make": {
             "type": "string"
         },
@@ -48,5 +56,25 @@
             "type": "boolean"
         }
     },
-    "required": []
+    "required": [
+        "make",
+        "model",
+        "serial_number",
+        "min_focal",
+        "max_focal",
+        "min_aperture",
+        "max_aperture_high",
+        "max_aperture_low",
+        "auto_focus",
+        "vibration_reduction",
+        "lens_maker_type",
+        "camera_maker_type",
+        "macro",
+        "zoom"
+    ],
+    "additionalProperties": false,
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    }
 }

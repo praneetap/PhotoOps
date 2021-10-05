@@ -1,15 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/exifData",
     "type": "object",
     "properties": {
-        "IFD0": { "$ref": "/schemas/ifd" }
+        "IFD0": { "$ref": "#/$defs/ifd" }
     },
     "patternProperties": {
-        "^IFD[1-9]$": { "$ref": "/schemas/imageIfd" }
+        "^IFD[1-9]$": { "$ref": "#/defs/imageIfd" }
     },
     "required": [
         "IFD0"
     ],
+    "additionalProperties": false,
     "$defs": {
         "ifd": {
             "$id": "/schemas/ifd",

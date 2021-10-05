@@ -1,7 +1,15 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/cameraData",
     "type": "object",
     "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^camera#v[0-9]+$"
+        },
         "make": {
             "type": "string"
         },
@@ -15,5 +23,15 @@
             "type": "string"
         }
     },
-    "required": []
+    "required": [
+        "make",
+        "model",
+        "software",
+        "serial_number"
+    ],
+    "additionalProperties": false,
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    }
 }

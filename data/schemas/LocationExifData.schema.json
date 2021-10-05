@@ -1,7 +1,15 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/locationData",
     "type": "object",
     "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^location#v[0-9]+$"
+        },
         "gps_version_id": {
             "type": "array",
             "items": {
@@ -48,5 +56,22 @@
             "type": "string"
         }
     },
-    "required": []
+    "required": [
+        "gps_version_id",
+        "gps_latitude_ref",
+        "gps_latitude",
+        "gps_longitude_ref",
+        "gps_longitude",
+        "gps_altitude_ref",
+        "gps_altitude",
+        "gps_time_stamp",
+        "gps_satellites",
+        "gps_map_datum",
+        "gps_date"
+    ],
+    "additionalProperties": false,
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    }
 }
