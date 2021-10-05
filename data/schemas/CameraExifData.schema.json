@@ -11,16 +11,16 @@
             "pattern": "^camera#v[0-9]+$"
         },
         "make": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "model": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "software": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "serial_number": {
-            "type": "string"
+            "type": ["string", "null"]
         }
     },
     "required": [

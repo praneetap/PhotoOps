@@ -10,88 +10,88 @@
             "pattern": "^image#v[0-9]+$"
         },
         "file_type": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "compression": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "jpeg": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         },
         "length": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "width": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "orientation": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "date_time": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "date_time_offset": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "auto_focus": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         },
         "exposure_mode": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "exposure_program": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "exposure_time": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "flash": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "fnumber": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "focal_length": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "focal_length_in_35mm_film": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "photographic_sensitivity": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "integer"
             }
         },
         "light_source": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "metering_mode": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "sensing_method": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "sensitivity_type": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "contrast": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "gain_control": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "saturation": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "sharpness": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "subject_distance_range": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "white_balance": {
-            "type": "string"
+            "type": ["string", "null"]
         }
     },
     "required": [

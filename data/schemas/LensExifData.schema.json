@@ -11,49 +11,49 @@
             "pattern": "^lens#v[0-9]+$"
         },
         "make": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "model": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "serial_number": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "min_focal": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "max_focal": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "min_aperture": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "max_aperture_high": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "max_aperture_low": {
-            "type": "number"
+            "type": ["number", "null"]
         },
         "auto_focus": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         },
         "vibration_reduction": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         },
         "lens_maker_type": {
-            "type": "array"
+            "type": ["array", "null"]
         },
         "camera_maker_type": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "string"
             }
         },
         "macro": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         },
         "zoom": {
-            "type": "boolean"
+            "type": ["boolean", "null"]
         }
     },
     "required": [

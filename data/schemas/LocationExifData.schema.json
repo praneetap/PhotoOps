@@ -11,49 +11,49 @@
             "pattern": "^location#v[0-9]+$"
         },
         "gps_version_id": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "integer"
             }
         },
         "gps_latitude_ref": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "gps_latitude": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "number"
             }
         },
         "gps_longitude_ref": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "gps_longitude": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "number"
             }
         },
         "gps_altitude_ref": {
-            "type": "integer"
+            "type": ["integer", "null"]
         },
         "gps_altitude": {
             "type": "number"
         },
         "gps_time_stamp": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
                 "type": "number"
             }
         },
         "gps_satellites": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "gps_map_datum": {
-            "type": "string"
+            "type": ["string", "null"]
         },
         "gps_date": {
-            "type": "string"
+            "type": ["string", "null"]
         }
     },
     "required": [
