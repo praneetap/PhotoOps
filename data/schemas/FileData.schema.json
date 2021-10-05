@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/fileData",
+    "type": "object",
+    "properties": {
+        "file_type": { "type": ["string", "null"] },
+        "extension": { "type": ["string", "null"] },
+        "object_size": { "type": ["int", "null"] },
+        "is_jpeg": { "type": ["boolean", "null"] },
+        "is_raw":  { "type": ["boolean", "null"] }
+    },
+    "required": [
+        "file_type",
+        "extension",
+        "object_size",
+        "is_jpeg",
+        "is_raw"
+    ],
+    "additionalProperties": false
+}

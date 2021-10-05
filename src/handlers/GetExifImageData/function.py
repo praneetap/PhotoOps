@@ -29,7 +29,6 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
         Union[int, None],
         Union[str, None],
         Union[str, None],
-        bool
     ]:
     '''Get image dimensions and whether or not JPEG'''
     # Unfortunately this is the best we can do without REALLY complicating the logic. I can't
@@ -41,8 +40,6 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
     width = None
     orientation = None
     compression = None
-    is_jpeg = True  # JPEGs are a crapshoot for having dimension info so assume is JPEG until
-                    # shown otherwise.
 
     for _k in exif:
         if None not in [length, width, orientation, compression]:
@@ -58,13 +55,10 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
                 orientation = values[2]
             if compression is None and values[3] is not None:
                 compression = values[3]
-            if not values[4]:
-                is_jpeg = values[4]
         else:
             # Sometimes the JPEG thumbnails set ImageWidth and ImageLength.
             if _k in ['image_width', 'image_length'] and exif.get('subfile_type') == 'Full-resolution image':
                 compression = exif.get('compression')
-                is_jpeg = False
                 if _k == 'image_width':
                     width = exif.get('image_width')
                 elif _k == 'image_length':
@@ -78,7 +72,7 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
             elif _k == 'orientation':
                 orientation = exif.get('orientation')
 
-    return (length, width, orientation, compression, is_jpeg)
+    return (length, width, orientation, compression)
 
 
 def _get_exif_image_data(exif_item: ExifDataItem) -> ImageExifData:
@@ -86,28 +80,16 @@ def _get_exif_image_data(exif_item: ExifDataItem) -> ImageExifData:
 
     ifd0 = exif_item.exif.ifd0
 
-    length, width, orientation, compression, is_jpeg = _get_image_info(asdict(exif_item))
+    length, width, orientation, compression = _get_image_info(asdict(exif_item))
 
     #ifd0 = cast(Ifd, exif_item.exif.ifd0)
     image_data: Dict[str, Any] = {}
 
+    # FIXME: Query for filetype once that data is available.
     image_data['length'] = length
     image_data['width'] = width
     image_data['orientation'] = orientation
     image_data['compression'] = compression
-    image_data['jpeg'] = is_jpeg
-
-    file_split = exif_item.pk.split('.')
-    if len(file_split) == 1:
-        image_data['file_type'] = 'UNKNOWN'
-    else:
-        file_extension = file_split[-1].upper()
-        if file_extension in ['JPEG', 'JPG']:
-            image_data['file_type'] = 'JPEG'
-        elif file_extension in ['TIFF', 'TIF']:
-            image_data['file_type'] = 'TIFF'
-        else:
-            image_data['file_type'] = file_extension
 
     # NOTE: DateTime is complicated. We should check for discrepancies between all the
     # locations and decide what to use when.

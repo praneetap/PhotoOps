@@ -1,11 +1,9 @@
 {
   "Item": {
-    "pk": "photoopsai-bucket#images/example.new",
+    "pk": "photoopsai-bucket#images/test_image_nikon.NEF",
     "sk": "image#v0",
 
-    "file_type": "NEW",
     "compression": "Nikon NEF Compressed",
-    "jpeg": false,
 
     "length": 3728,
     "width": 5600,

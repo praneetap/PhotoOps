@@ -1,6 +1,13 @@
 {
-  "pk": "photoopsai-bucket#images/example.raw",
+  "pk": "photoopsai-bucket#images/test_image_nikon.NEF",
   "sk": "exif#v0",
+  "file": {
+      "file_type": "TIFF",
+      "extension": "nef",
+      "object_size": 24190458,
+      "is_jpeg": false,
+      "is_raw": true
+  },
   "exif": {
     "ifd0": {
       "subfile_type": "Reduced-resolution image",

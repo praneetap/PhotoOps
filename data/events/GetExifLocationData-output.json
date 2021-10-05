@@ -1,6 +1,6 @@
 {
   "Item": {
-    "pk": "photoopsai-bucket#images/example.raw",
+    "pk": "photoopsai-bucket#images/test_image_nikon.NEF",
     "sk": "location#v0",
     "gps_version_id": [
       2,

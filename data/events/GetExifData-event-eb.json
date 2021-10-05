@@ -27,7 +27,7 @@
           "arn": "arn:aws:s3:::photoopsai-bucket"
         },
         "object": {
-          "key": "images/example.raw",
+          "key": "images/example.NEF",
           "size": 24190458,
           "eTag": "a235d28b719a0497fc43d9b7c266e2e0-3",
           "sequencer": "005FE66F297EFF0472"

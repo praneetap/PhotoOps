@@ -15,6 +15,7 @@ aws-lambda-powertools = "*"
 boto3 = "*"
 exifread = {editable = true, ref = "feature/exifheader-changes", git = "https://github.com/ServerlessOpsIO/exif-py"}
 dataclasses-json = "*"
+filetype = "*"
 
 [dev-packages]
 flake8 = "*"

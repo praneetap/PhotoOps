@@ -9,14 +9,8 @@
             "type": "string",
             "pattern": "^image#v[0-9]+$"
         },
-        "file_type": {
-            "type": ["string", "null"]
-        },
         "compression": {
             "type": ["string", "null"]
-        },
-        "jpeg": {
-            "type": ["boolean", "null"]
         },
         "length": {
             "type": ["integer", "null"]
@@ -95,9 +89,7 @@
         }
     },
     "required": [
-       "file_type",
         "compression",
-        "jpeg",
         "length",
         "width",
         "orientation",

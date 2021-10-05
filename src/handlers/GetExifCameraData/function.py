@@ -28,16 +28,14 @@ def _get_exif_camera_data(exif_data: ExifDataItem) -> CameraExifData:
 
     ifd0 = cast(Ifd, exif_data.exif.ifd0)
 
-    camera_data = CameraExifData(
-        **{
+    camera_data = {
             'make': ifd0.make,
             'model': ifd0.model,
             'software': ifd0.software,
             'serial_number': None if ifd0.maker_note is None else ifd0.maker_note.serial_number
         }
-    )
 
-    return camera_data
+    return CameraExifData(**camera_data)
 
 
 def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
@@ -48,6 +46,7 @@ def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     sk = 'camera#v0'
     exif_data = ExifDataItem(**event)
     camera_data = _get_exif_camera_data(exif_data)
+    print(camera_data.__dict__)
     camera_data_item = CameraExifDataItem(
         **{
             'pk': pk,

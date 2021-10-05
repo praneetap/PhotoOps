@@ -4,3 +4,4 @@
 aws_lambda_powertools
 boto3
 git+https://github.com/ServerlessOpsIO/exif-py@feature/exifheader-changes#egg=exifread
+filetype

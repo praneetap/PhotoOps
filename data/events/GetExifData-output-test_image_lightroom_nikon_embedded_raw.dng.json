@@ -1,7 +1,14 @@
 {
     "Item": {
-        "pk": "photoopsai-bucket#images/example.raw",
+        "pk": "photoopsai-bucket#images/test_image_lightroom_nikon_embedded_raw.dng",
         "sk": "exif#v0",
+        "file": {
+            "file_type": "TIFF",
+            "extension": "dng",
+            "object_size": 24190458,
+            "is_jpeg": false,
+            "is_raw": true
+        },
         "exif": {
             "ifd0": {
                 "subfile_type": "Reduced-resolution image",

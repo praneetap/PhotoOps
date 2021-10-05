@@ -1,7 +1,14 @@
 {
     "Item": {
-        "pk": "photoopsai-bucket#images/example.raw",
+        "pk": "photoopsai-bucket#images/test_image_lightroom_nikon.tif",
         "sk": "exif#v0",
+        "file": {
+            "file_type": "TIFF",
+            "extension": "tif",
+            "object_size": 24190458,
+            "is_jpeg": false,
+            "is_raw": false
+        },
         "exif": {
             "ifd0": {
                 "subfile_type": "Full-resolution image",

@@ -9,18 +9,25 @@
         "sk": {
             "type": "string"
         },
+        "file": {
+            "$ref": "#/$defs/file"
+        },
         "exif": {
-            "$ref": "#/$defs/item"
+            "$ref": "#/$defs/exif"
         }
     },
     "required": [
         "pk",
         "sk",
-        "exif"
+        "exif",
+        "file"
     ],
     "additionalProperties": false,
     "$defs": {
-        "item": {
+        "file": {
+            "$schema": "file:data/schemas/FileData.schema.json"
+        },
+        "exif": {
             "$schema": "file:data/schemas/ExifData.schema.json"
         }
     }

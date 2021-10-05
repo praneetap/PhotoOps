@@ -20,20 +20,6 @@ IMAGE_DIR = os.path.join(DATA_DIR, 'images')
 MODEL_DIR = os.path.join(DATA_DIR, 'models')
 
 ### Events
-@pytest.fixture(params=['GetExifData-event-eb.json'])
-def event(request):
-    '''Return a test event'''
-    with open(os.path.join(EVENT_DIR, request.param)) as f:
-        return json.load(f)
-
-
-@pytest.fixture()
-def event_schema():
-    '''Return an event schema'''
-    with open(os.path.join(SCHEMA_DIR, 's3-notification.schema.json')) as f:
-        return json.load(f)
-
-
 @pytest.fixture(params=[
     'test_image_nikon.NEF',
     'test_image_lightroom_nikon.jpg',
@@ -44,6 +30,22 @@ def event_schema():
 def image_name(request):
     '''Return an image file object'''
     return request.param
+
+
+@pytest.fixture(params=['GetExifData-event-eb.json'])
+def event(request, image_name):
+    '''Return a test event'''
+    with open(os.path.join(EVENT_DIR, request.param)) as f:
+        j = json.load(f)
+    j['Records'][0]['s3']['object']['key'] = 'images/{}'.format(image_name)
+    return j
+
+
+@pytest.fixture()
+def event_schema():
+    '''Return an event schema'''
+    with open(os.path.join(SCHEMA_DIR, 's3-notification.schema.json')) as f:
+        return json.load(f)
 
 
 @pytest.fixture()

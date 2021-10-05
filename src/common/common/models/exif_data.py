@@ -13,6 +13,8 @@ from inflection import underscore
 from json_to_models.dynamic_typing import FloatString, IntString, IsoTimeString
 from typing import Any, List, Optional, Union
 
+from .file_data import FileData
+
 
 @dataclass_json(letter_case=LetterCase.PASCAL, undefined=Undefined.RAISE)
 @dataclass
@@ -297,10 +299,15 @@ class ExifDataItem:
     pk: str
     sk: str
     exif: Optional[Any]=None
+    file: Optional[Any]=None
 
     def __post_init__(self):
         if isinstance(self.exif, dict):
             self.exif = make_exif_data_dataclass(**self.exif)
+
+        if isinstance(self.file, dict):
+            self.file = FileData(**self.file)
+
 
 
 def _convert_exif_data_attrs_to_ifds(cls) -> None:
