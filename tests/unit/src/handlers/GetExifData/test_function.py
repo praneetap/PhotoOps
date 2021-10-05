@@ -79,6 +79,20 @@ def response_schema():
         return json.load(f)
 
 
+@pytest.fixture()
+def item_schema():
+    '''Return an itemschema'''
+    with open(os.path.join(SCHEMA_DIR, 'ExifDataItem.schema.json')) as f:
+        return json.load(f)
+
+
+@pytest.fixture()
+def data_schema():
+    '''Return a data schema'''
+    with open(os.path.join(SCHEMA_DIR, 'ExifData.schema.json')) as f:
+        return json.load(f)
+
+
 ### AWS clients
 @pytest.fixture()
 def aws_credentials():
@@ -114,8 +128,18 @@ def test_validate_event(event, event_schema):
 
 
 def test_validate_expected_response(expected_response, response_schema):
-    '''Test response data against schema'''
+    '''Test response against schema'''
     jsonschema.validate(expected_response, response_schema)
+
+
+def test_validate_expected_item(expected_response, item_schema):
+    '''Test response data against schema'''
+    jsonschema.validate(expected_response.get('Item'), item_schema)
+
+
+def test_validate_expected_data(expected_response, data_schema):
+    '''Test response data against schema'''
+    jsonschema.validate(expected_response.get('Item', {}).get('exif'), data_schema)
 
 
 ### Tests

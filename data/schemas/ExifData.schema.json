@@ -3,400 +3,395 @@
     "$id": "/schemas/exifData",
     "type": "object",
     "properties": {
-        "IFD0": { "$ref": "#/$defs/ifd" }
+        "ifd0": { "$ref": "#/$defs/ifd" }
     },
     "patternProperties": {
-        "^IFD[1-9]$": { "$ref": "#/defs/imageIfd" }
+        "^ifd[1-9]$": { "$ref": "#/$defs/imageIfd" }
     },
     "required": [
-        "IFD0"
+        "ifd0"
     ],
     "additionalProperties": false,
     "$defs": {
         "ifd": {
-            "$id": "/schemas/ifd",
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "subfile_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "image_width": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "image_length": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "bits_per_sample": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "compression": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "photometric_interpretation": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "strip_offsets": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "samples_per_pixel": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "rows_per_strip": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "strip_byte_counts": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "x_resolution": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "y_resolution": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "planar_configuration": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "resolution_unit": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "make": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "model": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "orientation": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "software": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "date_time": {},
                 "artist": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sub_if_ds": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
-                        "type": "integer"
+                        "type": ["integer", "null"]
                     },
                     "default": []
                 },
                 "reference_black_white": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
-                        "type": "number"
+                        "type": ["number", "null"]
                     },
                     "default": []
                 },
                 "application_notes": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "default": []
                 },
                 "copyright": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "exif_offset": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "gps_info": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "date_time_original": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "tiffep_standard_id": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
-                        "type": "integer"
+                        "type": ["integer", "null"]
                     },
                     "default": []
                 },
                 "sensing_method": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "thumbnail_offset": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "thumbnail_length": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "exif": {
-                    "$ref": "#/definitions/exifIfd"
+                    "$ref": "#/$defs/exifIfd"
                 },
                 "gps": {
-                    "$ref": "#/definitions/gpsIfd"
+                    "$ref": "#/$defs/gpsIfd"
                 },
                 "maker_note": {
-                    "$ref": "#/definitions/makerNote"
+                    "$ref": "#/$defs/makerNote"
                 }
             },
             "patternProperties": {
-                "^sub_ifd[0-9]$": { "$ref": "/schemas/imageIfd" }
+                "^sub_ifd[0-9]$": { "$ref": "#/$defs/imageIfd" }
             },
             "required": []
         },
         "exifIfd": {
-            "$id": "/schemas/exifIfd",
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "exposure_time": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "f_number": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "exposure_program": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "photographic_sensitivity": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "sensitivity_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "recommended_exposure_index": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "date_time_original": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "date_time_digitized": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "offset_time": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "offset_time_original": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "offset_time_digitized": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "exposure_bias_value": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "max_aperture_value": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "metering_mode": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "light_source": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "flash": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "focal_length": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "user_comment": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sub_sec_time": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sub_sec_time_original": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sub_sec_time_digitized": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sensing_method": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "file_source": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "scene_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "cva_pattern": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "custom_rendered": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "exposure_mode": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "white_balance": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "focal_length_in_35mm_film": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "scene_capture_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "gain_control": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "contrast": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "saturation": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "sharpness": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "subject_distance_range": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 }
             },
             "required": []
         },
         "gpsIfd": {
-            "$id": "/schemas/gpsIfd",
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
             "properties": {
                 "gps_version_id": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "gps_latitude_ref": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "gps_latitude": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "number"
                     }
                 },
                 "gps_longitude_ref": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "gps_longitude": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "number"
                     }
                 },
                 "gps_altitude_ref": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "gps_altitude": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "gps_time_stamp": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "number"
                     }
                 },
                 "gps_satellites": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "gps_map_datum": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "gps_date": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 }
             },
             "required": []
         },
         "imageIfd": {
-            "$id": "/schemas/imageIfd",
             "$schema": "http://json-schema.org/draft-07/schema#",
-            "type": "object",
+            "type": ["object", "null"],
             "properties": {
                 "subfile_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "compression": {
-                    "type": "string"
+                    "type": ["string", "integer", "null"]
                 },
                 "image_width": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "image_length": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "bits_per_sample": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "photometric_interpretation": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "strip_offsets": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "samples_per_pixel": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "rows_per_strip": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "strip_byte_counts": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     }
                 },
                 "x_resolution": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "y_resolution": {
-                    "type": "number"
+                    "type": ["number", "null"]
                 },
                 "planar_configuration": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "resolution_unit": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "thumbnail_offset": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "thumbnail_length": {
-                    "type": "integer"
+                    "type": ["integer", "null"]
                 },
                 "cfa_repeat_pattern_dim": {
-                    "type": "array",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "integer"
                     },
                     "default": []
                 },
                 "y_cb_cr_positioning": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 }
             },
             "required": []
         },
         "makerNote": {
-            "$id": "/schemas/makerNote",
             "$schema": "http://json-schema.org/draft-07/schema#",
-            "type": "object",
+            "type": ["object", "null"],
             "patternProperties": {
                 "^.+$": {}
             },
