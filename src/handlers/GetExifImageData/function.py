@@ -37,6 +37,8 @@ def _get_image_info(exif: Dict[str, Any]) -> Tuple[
     # dimension info too. We just do our best to detect signals of what the image might be.
     #
     # FIXME: this is messy and not very good.
+    #
+    # FIXME: We can now actually get whether the file is a JPG or not from the event.
     length = None
     width = None
     orientation = None
