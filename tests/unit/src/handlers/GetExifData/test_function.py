@@ -157,4 +157,4 @@ def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_
     #image.seek(0)
 
     resp = func.handler(event, {})
-    assert asdict(resp) == expected_response
+    assert resp == expected_response

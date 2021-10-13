@@ -10,6 +10,7 @@ from typing import Any, Dict, Tuple, Union
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from common import ExifDataItem, Ifd, ImageExifData, ImageExifDataItem, PutDdbItemAction
+from common.util.dataclasses import lambda_dataclass_response
 
 
 # FIXME: Replace with powertools logger
@@ -127,6 +128,7 @@ def _get_exif_image_data(exif_item: ExifDataItem) -> ImageExifData:
     return ImageExifData(**image_data)
 
 
+@lambda_dataclass_response
 def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))

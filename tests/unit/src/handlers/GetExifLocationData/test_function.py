@@ -88,4 +88,4 @@ def test_validate_expected_response(expected_response, response_schema):
 def test_handler(event, expected_response, mocker):
     '''Call handler'''
     resp = func.handler(event, {})
-    assert asdict(resp) == expected_response
+    assert resp == expected_response

@@ -20,6 +20,7 @@ from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
 from common import ExifDataItem, FileData, PutDdbItemAction, make_exif_data_dataclass
+from common.util.dataclasses import lambda_dataclass_response
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -93,7 +94,7 @@ def _get_exif_data(s3_bucket: str, s3_object: str, object_size: int) -> Tuple[An
 
     return exif_data, file_data
 
-
+@lambda_dataclass_response
 def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))

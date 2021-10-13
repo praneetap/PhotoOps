@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional, cast
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
 from common import CameraExifData, CameraExifDataItem, ExifDataItem, Ifd, PutDdbItemAction
+from common.util.dataclasses import lambda_dataclass_response
 
 # FIXME: Replace with powertools logger
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -38,6 +39,7 @@ def _get_exif_camera_data(exif_data: ExifDataItem) -> CameraExifData:
     return CameraExifData(**camera_data)
 
 
+@lambda_dataclass_response
 def handler(event: Dict[str, Any], context: LambdaContext) -> Response:
     '''Function entry'''
     _logger.debug('Event: {}'.format(json.dumps(event)))
