@@ -1,0 +1,11 @@
+{
+    "Item": {
+        "pk": "photoopsai-bucket#images/test_image_nikon.NEF",
+        "sk": "file#v0",
+        "file_type": "TIFF",
+        "extension": "nef",
+        "object_size": 24190458,
+        "is_jpeg": false,
+        "is_raw": true
+    }
+}

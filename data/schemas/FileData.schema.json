@@ -3,9 +3,16 @@
     "$id": "/schemas/fileData",
     "type": "object",
     "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^file#v[0-9]+$"
+        },
         "file_type": { "type": ["string", "null"] },
         "extension": { "type": ["string", "null"] },
-        "object_size": { "type": ["int", "null"] },
+        "object_size": { "type": ["integer", "null"] },
         "is_jpeg": { "type": ["boolean", "null"] },
         "is_raw":  { "type": ["boolean", "null"] }
     },
@@ -16,5 +23,9 @@
         "is_jpeg",
         "is_raw"
     ],
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    },
     "additionalProperties": false
 }
