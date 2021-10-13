@@ -344,6 +344,44 @@ Resources:
     Type: AWS::SQS::Queue
 
 
+  GetFileData:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Get file data"
+      CodeUri: src/handlers/GetFileData
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GetFileDataDlqQueue.Arn
+      Events:
+        EventBridgeEvent:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref EventBus
+            InputPath: "$.detail.responsePayload.Item"
+            Pattern:
+              source: [ "lambda" ]
+              detail-type: [ "Lambda Function Invocation Result - Success" ]
+              detail:
+                responsePayload:
+                  Item:
+                    pk:
+                      - exists: true
+                    sk:
+                      - 'exif#v0'
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
+
+  GetFileDataDlqQueue:
+    Type: AWS::SQS::Queue
+
+
   PutDdbItem:
     Type: AWS::Serverless::Function
     Properties:
