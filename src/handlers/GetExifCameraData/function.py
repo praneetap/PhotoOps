@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional, cast
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from common import CameraExifData, CameraExifDataItem, ExifDataItem, Ifd, PutDdbItemAction
+from common.models import CameraExifData, CameraExifDataItem, ExifDataItem, Ifd, PutDdbItemAction
 from common.util.dataclasses import lambda_dataclass_response
 
 # FIXME: Replace with powertools logger

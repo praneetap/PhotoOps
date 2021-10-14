@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Dict, cast
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import ExifDataItem, FileData, FileDataItem, PutDdbItemAction
+from common.models import ExifDataItem, FileDataItem, PutDdbItemAction
 from common.util.dataclasses import lambda_dataclass_response
 
 

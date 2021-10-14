@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Dict, Tuple, Union
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import ExifDataItem, Ifd, ImageExifData, ImageExifDataItem, PutDdbItemAction
+from common.models import ExifDataItem, Ifd, ImageExifData, ImageExifDataItem, PutDdbItemAction
 from common.util.dataclasses import lambda_dataclass_response
 
 

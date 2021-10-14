@@ -19,7 +19,7 @@ import filetype
 from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from common import ExifDataItem, FileData, PutDdbItemAction, make_exif_data_dataclass
+from common.models import ExifDataItem, FileData, PutDdbItemAction, make_exif_data_dataclass
 from common.util.dataclasses import lambda_dataclass_response
 
 # FIXME: Replace with powertools logger

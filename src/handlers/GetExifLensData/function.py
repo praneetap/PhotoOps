@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Dict, List, Optional, Union, cast
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from common import ExifDataItem, Ifd, LensExifData, LensExifDataItem, PutDdbItemAction
+from common.models import ExifDataItem, Ifd, LensExifData, LensExifDataItem, PutDdbItemAction
 from common.util.dataclasses import lambda_dataclass_response
 
 # FIXME: Replace with powertools logger
