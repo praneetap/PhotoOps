@@ -424,7 +424,7 @@ Resources:
       Handler: function.handler
       Runtime: python3.8
       MemorySize: 128
-      Timeout: 3
+      Timeout: 30
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt CreateJpegFromRawDlqQueue.Arn
