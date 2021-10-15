@@ -467,8 +467,9 @@ Resources:
           - Effect: "Allow"
             Principal:
               AWS:
-                - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-GetExifDataRole-*"
-                - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-CreateJpegFromRaw-*"
+                # Anyone in account can assume so long as they have their own
+                # permission to assume the role.
+                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action:
               - "sts:AssumeRole"
       Policies:
