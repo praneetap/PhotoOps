@@ -6,3 +6,4 @@ from .location_exif_data import *
 from .put_ddb_item import *
 from .exif_data import *
 from .file_data import *
+from .jpeg_data import *

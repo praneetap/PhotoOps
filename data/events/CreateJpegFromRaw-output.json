@@ -1,0 +1,12 @@
+{
+  "Item": {
+    "pk": "photoopsai-bucket#images/test_image_nikon.NEF",
+    "sk": "jpeg#v0",
+    "s3_bucket": "cache_bucket",
+    "s3_object_key": "cache/photoopsai-bucket/images/test_image_nikon.NEF.jpg",
+    "expiration_date_time": "2021-10-29 17:43:28.757278",
+    "size": 3034129,
+    "original_s3_bucket": "photoopsai-bucket",
+    "original_s3_object_key": "images/test_image_nikon.NEF"
+  }
+}

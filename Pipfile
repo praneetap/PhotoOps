@@ -16,6 +16,7 @@ boto3 = "*"
 exifread = {editable = true, ref = "feature/exifheader-changes", git = "https://github.com/ServerlessOpsIO/exif-py"}
 dataclasses-json = "*"
 filetype = "*"
+imageio = "*"
 
 [dev-packages]
 flake8 = "*"

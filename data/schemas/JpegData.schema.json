@@ -1,0 +1,45 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/schemas/cameraData",
+    "type": "object",
+    "properties": {
+        "pk": {
+            "type": "string"
+        },
+        "sk": {
+            "type": "string",
+            "pattern": "^jpeg#v[0-9]+$"
+        },
+        "s3_bucket": {
+            "type": "string"
+        },
+        "s3_object_key": {
+            "type": "string"
+        },
+        "size": {
+            "type": "number"
+        },
+        "expiration_date_time": {
+            "type": "string"
+        },
+        "original_s3_bucket": {
+            "type": "string"
+        },
+        "original_s3_object_key": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "s3_bucket",
+        "s3_object_key",
+        "size",
+        "expiration_date_time",
+        "original_s3_bucket",
+        "original_s3_object_key"
+    ],
+    "additionalProperties": false,
+    "dependencies": {
+        "pk": [ "sk" ],
+        "sk": [ "pk" ]
+    }
+}

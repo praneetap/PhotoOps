@@ -3,6 +3,6 @@
 
 aws_lambda_powertools
 boto3
+imageio
 mypy_boto3_s3
 pillow
-rawpy

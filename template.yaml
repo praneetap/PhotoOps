@@ -40,6 +40,11 @@ Parameters:
       - Active
       - PassThrough
 
+  RawPyLayerArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: "ARN of RawPy layer"
+    Default: "/layers/aws-lambda-layer-python-rawpy-tom/RawPy38Arn"
+
 
 
 Mappings:
@@ -449,6 +454,35 @@ Resources:
       Topics:
         - !Ref PhotoOpsIngestTopic
 
+
+  CreateJpegFromRaw:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Create a CreateJpegFromRaw"
+      CodeUri: src/handlers/CreateJpegFromRaw
+      Handler: function.handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt CreateJpegFromRawDlqQueue.Arn
+      Environment:
+        Variables:
+          PHOTOOPS_S3_BUCKET: !Ref PhotoOpsBucket
+      Layers:
+        - !Ref RawPyLayerArn
+      EventInvokeConfig:
+        DestinationConfig:
+          OnSuccess:
+            Type: EventBridge
+            Destination: !GetAtt EventBus.Arn
+
+  CreateJpegFromRawDlqQueue:
+    Type: AWS::SQS::Queue
+
+  PhotoOpsBucket:
+    Type: AWS::S3::Bucket
 
   # FIXME: Need a DLQ
   EventBus:
