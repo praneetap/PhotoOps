@@ -18,6 +18,9 @@ import filetype
 
 from aws_lambda_powertools.utilities.data_classes import S3Event
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from botocore.exceptions import ParamValidationError
+from mypy_boto3_s3 import S3Client
+from mypy_boto3_sts import STSClient
 
 from common.models import ExifDataItem, FileData, PutDdbItemAction, make_exif_data_dataclass
 from common.util.dataclasses import lambda_dataclass_response
@@ -27,7 +30,27 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
 
-s3_client = boto3.client('s3')
+# Cross account access
+# try/except here for local dev and testing.
+try:
+    CROSS_ACCOUNT_IAM_ROLE_ARN = os.environ.get(
+        'CROSS_ACCOUNT_IAM_ROLE_ARN',
+        'INVALID-ARN'
+    )
+    STS_CLIENT: STSClient = boto3.client('sts')
+    CROSS_ACCOUNT_CREDENTIALS = STS_CLIENT.assume_role(
+        RoleArn=CROSS_ACCOUNT_IAM_ROLE_ARN,
+        RoleSessionName=str('CreateJpegFromRaw'),
+        DurationSeconds=28800   # Must be in sync with CROSS_ACCOUNT_IAM_ROLE_ARN
+    ).get('Credentials', {})
+    s3_client: S3Client = boto3.client(
+        's3',
+        aws_access_key_id=CROSS_ACCOUNT_CREDENTIALS['AccessKeyId'],
+        aws_secret_access_key=CROSS_ACCOUNT_CREDENTIALS['SecretAccessKey'],
+        aws_session_token=CROSS_ACCOUNT_CREDENTIALS['SessionToken']
+    )
+except ParamValidationError as e:
+    pass
 
 
 @dataclass

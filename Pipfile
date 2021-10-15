@@ -22,7 +22,7 @@ imageio = "*"
 flake8 = "*"
 moto = {extras = ["dynamodb2", "s3"], version = "*"}
 mypy = "*"
-boto3-stubs = { extras = ["dynamodb", "lambda", "kinesis", "s3", "sns", "sqs", "ssm", "xray" ], version = "*"}
+boto3-stubs = { extras = ["dynamodb", "lambda", "s3", "ssm", "sts", "xray" ], version = "*"}
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"

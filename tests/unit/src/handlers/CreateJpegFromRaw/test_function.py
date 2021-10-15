@@ -14,9 +14,6 @@ from datetime import datetime, timedelta
 from typing import cast
 
 CACHE_BUCKET_NAME = 'cache_bucket'
-os.environ['PHOTOOPS_S3_BUCKET'] = CACHE_BUCKET_NAME
-
-import src.handlers.CreateJpegFromRaw.function as func
 
 DATA_DIR = './data'
 EVENT_DIR = os.path.join(DATA_DIR, 'events')
@@ -38,6 +35,13 @@ def aws_credentials() -> None:
     os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
     os.environ['AWS_SECURITY_TOKEN'] = 'testing'
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
+
+
+@pytest.fixture()
+def STS_CLIENT(aws_credentials):
+    '''S3 client'''
+    with moto.mock_s3():
+        yield boto3.client('sts')
 
 
 @pytest.fixture()
@@ -101,6 +105,20 @@ def response_schema() -> dict:
         return json.load(f)
 
 
+@pytest.fixture()
+@moto.mock_s3
+@moto.mock_sts
+def func(STS_CLIENT, S3_CLIENT):
+    '''
+    Function fixture
+
+    '''
+    os.environ['PHOTOOPS_S3_BUCKET'] = CACHE_BUCKET_NAME
+    os.environ['CROSS_ACCOUNT_IAM_ROLE_ARN'] = 'arn:aws:iam::123456789012:role/PhotoOpsAI/CrossAccountAccess'
+    import src.handlers.CreateJpegFromRaw.function as func
+    return func
+
+
 # Data validation
 def test_validate_event(event: dict, event_schema: dict):
     '''Test event data against schema'''
@@ -127,12 +145,18 @@ def test_validate_expected_response(expected_response: dict, response_schema: di
 
 
 ### Tests
-def test_handler(event: dict, expected_response: dict, image, S3_CLIENT, mocker):
+@moto.mock_s3
+def test_handler(event: dict, expected_response: dict, image, S3_CLIENT, STS_CLIENT, func, mocker):
     '''Call handler'''
     mocker.patch.object(
         func,
         'S3_CLIENT',
         S3_CLIENT
+    )
+    mocker.patch.object(
+        func,
+        'STS_CLIENT',
+        STS_CLIENT
     )
 
     # Stage file

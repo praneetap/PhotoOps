@@ -112,10 +112,20 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 30
+      Environment:
+        Variables:
+          CROSS_ACCOUNT_IAM_ROLE_ARN: !GetAtt PhotoOpsCrossAccountIamRole.Arn
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Sid: StsAssumeRole
+              Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Resource: !GetAtt PhotoOpsCrossAccountIamRole.Arn
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifDataDlqQueue.Arn
-      Role: !GetAtt GetExifDataIamRole.Arn
       Events:
         EventBridgeEvent:
           Type: EventBridgeRule
@@ -144,57 +154,6 @@ Resources:
 
   GetExifDataDlqQueue:
     Type: AWS::SQS::Queue
-
-  GetExifDataIamRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      RoleName: !Sub "${AWS::StackName}-GetExifData"
-      Path: "/PhotoOpsAI/"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service:
-                - "lambda.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        - "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
-      Policies:
-        - PolicyName: "EventBridgePutEvent"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Sid: "PutEvent"
-                Effect: "Allow"
-                Action:
-                  - "events:PutEvents"
-                Resource: !GetAtt EventBus.Arn
-        - PolicyName: "DlqWrite"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Sid: "PutMessage"
-                Effect: "Allow"
-                Action:
-                  - "sqs:SendMessage"
-                Resource: !GetAtt GetExifDataDlqQueue.Arn
-        - PolicyName: "DownloadS3Object"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Sid: "GetS3Object"
-                Effect: "Allow"
-                Action:
-                  - "s3:GetObject"
-                Resource: "arn:aws:s3:::*/*"
-              - Sid: "ListS3Bucket"
-                Effect: "Allow"
-                Action:
-                  - "s3:ListBucket"
-                Resource: "arn:aws:s3:::*/"
 
 
   GetExifCameraData:
@@ -470,6 +429,15 @@ Resources:
       Environment:
         Variables:
           PHOTOOPS_S3_BUCKET: !Ref PhotoOpsBucket
+          CROSS_ACCOUNT_IAM_ROLE_ARN: !GetAtt PhotoOpsCrossAccountIamRole.Arn
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Sid: StsAssumeRole
+              Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Resource: !GetAtt PhotoOpsCrossAccountIamRole.Arn
       Layers:
         - !Ref RawPyLayerArn
       EventInvokeConfig:
@@ -483,6 +451,40 @@ Resources:
 
   PhotoOpsBucket:
     Type: AWS::S3::Bucket
+
+
+  PhotoOpsCrossAccountIamRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "CrossAccountAccess-${ServiceEnv}"
+      Path: "/PhotoOpsAI/"
+      MaxSessionDuration: 28800   # Must be larger than Lambda function lifetime.
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-GetExifDataRole-*"
+                - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-CreateJpegFromRaw-*"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "DownloadS3Object"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "GetS3Object"
+                Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource: "arn:aws:s3:::*/*"
+              - Sid: "ListS3Bucket"
+                Effect: "Allow"
+                Action:
+                  - "s3:ListBucket"
+                Resource: "arn:aws:s3:::*/"
+
 
   # FIXME: Need a DLQ
   EventBus:

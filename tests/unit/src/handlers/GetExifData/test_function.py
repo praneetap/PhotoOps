@@ -112,13 +112,23 @@ def s3_client(aws_credentials):
     return boto3.client('s3')
 
 
+@moto.mock_sts
 @pytest.fixture()
-def func(s3_client):
+def sts_client(aws_credentials):
+    '''S3 client fixture'''
+    return boto3.client('sts')
+
+
+@pytest.fixture()
+@moto.mock_s3
+@moto.mock_sts
+def func(s3_client, sts_client):
     '''
     Function fixture
 
     Ensures function initializes a mocked boto3
     '''
+    os.environ['CROSS_ACCOUNT_IAM_ROLE_ARN'] = 'arn:aws:iam::123456789012:role/PhotoOpsAI/CrossAccountAccess'
     import src.handlers.GetExifData.function as func
     return func
 
@@ -146,7 +156,7 @@ def test_validate_expected_data(expected_response, data_schema):
 
 ### Tests
 @moto.mock_s3
-def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_object_key, func, mocker):
+def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_object_key, sts_client, func, mocker):
     '''Call handler'''
     s3_client.create_bucket(Bucket=s3_bucket_name)
 
@@ -155,6 +165,12 @@ def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_
     s3_client.upload_fileobj(image, s3_bucket_name, s3_object_key)
     # FIXME: Looks like exifread closes JPGs biut not others. Should figure that out.
     #image.seek(0)
+
+    mocker.patch.object(
+        func,
+        'STS_CLIENT',
+        sts_client
+    )
 
     resp = func.handler(event, {})
     assert resp == expected_response
