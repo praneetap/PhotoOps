@@ -460,7 +460,6 @@ Resources:
     Properties:
       RoleName: !Sub "CrossAccountAccess-${ServiceEnv}"
       Path: "/PhotoOpsAI/"
-      MaxSessionDuration: 28800   # Must be larger than Lambda function lifetime.
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:

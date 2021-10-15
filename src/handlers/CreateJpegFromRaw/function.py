@@ -14,7 +14,6 @@ import imageio
 import rawpy
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from botocore.exceptions import ParamValidationError
 from mypy_boto3_s3 import S3Client
 from mypy_boto3_s3.type_defs import PutObjectOutputTypeDef
 from mypy_boto3_sts import STSClient
@@ -28,30 +27,9 @@ logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
 
 S3_CLIENT: S3Client = boto3.client("s3")
-
-# Cross account S3 access.
-# try/except here for local dev and testing.
-try:
-    CROSS_ACCOUNT_IAM_ROLE_ARN = os.environ.get(
-        'CROSS_ACCOUNT_IAM_ROLE_ARN',
-        'INVALID-ARN'
-    )
-    STS_CLIENT: STSClient = boto3.client('sts')
-    CROSS_ACCOUNT_CREDENTIALS = STS_CLIENT.assume_role(
-        RoleArn=CROSS_ACCOUNT_IAM_ROLE_ARN,
-        RoleSessionName=str('CreateJpegFromRaw'),
-        DurationSeconds=28800   # Must be in sync with CROSS_ACCOUNT_IAM_ROLE_ARN
-    ).get('Credentials', {})
-    S3_CLIENT_CROSS_ACCOUNT: S3Client = boto3.client(
-        "s3",
-        aws_access_key_id=CROSS_ACCOUNT_CREDENTIALS['AccessKeyId'],
-        aws_secret_access_key=CROSS_ACCOUNT_CREDENTIALS['SecretAccessKey'],
-        aws_session_token=CROSS_ACCOUNT_CREDENTIALS['SessionToken']
-    )
-except ParamValidationError as e:
-    pass
-
 S3_EXPIRATION_DELTA_DAYS = 15
+
+CROSS_ACCOUNT_IAM_ROLE_ARN = os.environ.get('CROSS_ACCOUNT_IAM_ROLE_ARN', '')
 
 PHOTOOPS_S3_BUCKET = os.environ['PHOTOOPS_S3_BUCKET']
 PHOTOOPS_IMAGE_CACHE_PREFIX = 'cache'
@@ -75,11 +53,33 @@ def _convert_raw_to_jpeg(raw_fileobj: IO[Any]) -> IO[Any]:
     return image_tmp_file
 
 
+def _get_cross_account_s3_client() -> S3Client:
+    '''Return an S3 Client with cross account credentials.'''
+    sts_client: STSClient = boto3.client('sts')
+    cross_account_credentials = sts_client.assume_role(
+        RoleArn=CROSS_ACCOUNT_IAM_ROLE_ARN,
+        RoleSessionName=str('CreateJpegFromRaw'),
+    ).get('Credentials', {})
+    s3_client_cross_account: S3Client = boto3.client(
+        "s3",
+        aws_access_key_id=cross_account_credentials['AccessKeyId'],
+        aws_secret_access_key=cross_account_credentials['SecretAccessKey'],
+        aws_session_token=cross_account_credentials['SessionToken']
+    )
+
+    return s3_client_cross_account
+
+
 def _get_s3_object(s3_bucket: str, s3_object_key: str) -> IO[Any]:
     '''Get S3 object'''
+    # Role chaining has a limit of 1hr which is shorter than the possible
+    # time of a function instance so have to do this here.
+    #
+    # TODO: investigate acquring outside and a refresh mechanism.
+    s3_client_cross_account = _get_cross_account_s3_client()
+
     s3_object = NamedTemporaryFile('wb+')
-    #s3_object = open('/tmp/foo.NEF', 'wb+')
-    S3_CLIENT_CROSS_ACCOUNT.download_fileobj(
+    s3_client_cross_account.download_fileobj(
         Bucket=s3_bucket,
         Key=s3_object_key,
         Fileobj=s3_object

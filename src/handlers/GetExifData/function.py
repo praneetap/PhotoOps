@@ -30,27 +30,7 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
 
-# Cross account access
-# try/except here for local dev and testing.
-try:
-    CROSS_ACCOUNT_IAM_ROLE_ARN = os.environ.get(
-        'CROSS_ACCOUNT_IAM_ROLE_ARN',
-        'INVALID-ARN'
-    )
-    STS_CLIENT: STSClient = boto3.client('sts')
-    CROSS_ACCOUNT_CREDENTIALS = STS_CLIENT.assume_role(
-        RoleArn=CROSS_ACCOUNT_IAM_ROLE_ARN,
-        RoleSessionName=str('CreateJpegFromRaw'),
-        DurationSeconds=28800   # Must be in sync with CROSS_ACCOUNT_IAM_ROLE_ARN
-    ).get('Credentials', {})
-    s3_client: S3Client = boto3.client(
-        's3',
-        aws_access_key_id=CROSS_ACCOUNT_CREDENTIALS['AccessKeyId'],
-        aws_secret_access_key=CROSS_ACCOUNT_CREDENTIALS['SecretAccessKey'],
-        aws_session_token=CROSS_ACCOUNT_CREDENTIALS['SessionToken']
-    )
-except ParamValidationError as e:
-    pass
+CROSS_ACCOUNT_IAM_ROLE_ARN = os.environ.get('CROSS_ACCOUNT_IAM_ROLE_ARN')
 
 
 @dataclass
@@ -59,10 +39,28 @@ class Response(PutDdbItemAction):
     Item: ExifDataItem
 
 
+def _get_cross_account_s3_client() -> S3Client:
+    '''Return an S3 Client with cross account credentials.'''
+    sts_client: STSClient = boto3.client('sts')
+    cross_account_credentials = sts_client.assume_role(
+        RoleArn=CROSS_ACCOUNT_IAM_ROLE_ARN,
+        RoleSessionName=str('GetExifData'),
+    ).get('Credentials', {})
+    s3_client_cross_account: S3Client = boto3.client(
+        "s3",
+        aws_access_key_id=cross_account_credentials['AccessKeyId'],
+        aws_secret_access_key=cross_account_credentials['SecretAccessKey'],
+        aws_session_token=cross_account_credentials['SessionToken']
+    )
+
+    return s3_client_cross_account
+
+
 def _get_exif_data(s3_bucket: str, s3_object: str, object_size: int) -> Tuple[Any, FileData]:
     '''Get EXIF data from object in S3'''
     with TemporaryFile('wb+') as image:
-        s3_client.download_fileobj(s3_bucket, s3_object, image)
+        s3_cross_account_client = _get_cross_account_s3_client()
+        s3_cross_account_client.download_fileobj(s3_bucket, s3_object, image)
         image.seek(0)
         ft: filetype.Type = filetype.guess(image)
         # FIXME: hdr has an open file handle. Will closing it reduce memory
