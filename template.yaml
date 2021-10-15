@@ -423,7 +423,7 @@ Resources:
       CodeUri: src/handlers/CreateJpegFromRaw
       Handler: function.handler
       Runtime: python3.8
-      MemorySize: 128
+      MemorySize: 512
       Timeout: 30
       DeadLetterQueue:
         Type: 'SQS'
