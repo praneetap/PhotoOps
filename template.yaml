@@ -433,13 +433,18 @@ Resources:
           PHOTOOPS_S3_BUCKET: !Ref PhotoOpsBucket
           CROSS_ACCOUNT_IAM_ROLE_ARN: !GetAtt PhotoOpsCrossAccountIamRole.Arn
       Policies:
-        - Version: "2012-10-17"
-          Statement:
-            - Sid: StsAssumeRole
-              Effect: Allow
-              Action:
-                - sts:AssumeRole
-              Resource: !GetAtt PhotoOpsCrossAccountIamRole.Arn
+        - Statement:
+          - Sid: StsAssumeRole
+            Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Resource: !GetAtt PhotoOpsCrossAccountIamRole.Arn
+        - Statement:
+          - Sid: S3PutObject
+            Effect: "Allow"
+            Action:
+              - s3:PutObject
+            Resource: !Sub "${PhotoOpsBucket.Arn}/*"
       Layers:
         - !Ref RawPyLayerArn
       EventInvokeConfig:
