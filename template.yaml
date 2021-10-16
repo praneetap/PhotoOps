@@ -396,6 +396,8 @@ Resources:
 
   PhotoOpsIngestTopic:
     Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-PhotoOpsIngestTopic"
 
   PhotoOpsIngestTopicPolicy:
     Type: AWS::SNS::TopicPolicy
