@@ -49,6 +49,7 @@ def _convert_raw_to_jpeg(raw_fileobj: IO[Any]) -> IO[Any]:
 
     image_tmp_file = TemporaryFile('wb+')
     imageio.imwrite(image_tmp_file, rgb, format='JPEG-PIL', quality=100)
+    image_tmp_file.seek(0)
 
     return image_tmp_file
 
@@ -96,6 +97,7 @@ def _put_s3_object(
     ) -> PutObjectOutputTypeDef:
     '''Put S3 object'''
     # NOTE: Not using upload_fileobj() because we want the response.
+    s3_object.seek(0)
     r = S3_CLIENT.put_object(
         Bucket=s3_bucket,
         Key=s3_object_key,
