@@ -18,7 +18,7 @@ check_profile:
 
 build:
 	$(info Building application)
-	sam build
+	sam build --use-container
 
 validate:
 	$(info linting SAM template)
