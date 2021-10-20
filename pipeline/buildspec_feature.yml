@@ -12,10 +12,10 @@ phases:
   build:
     commands:
       - sam build --use-container --template ${SAM_TEMPLATE}
-      - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
+      - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} feature-deploy
       - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
                     --capabilities CAPABILITY_IAM
-                    --region ${TESTING_REGION}
-                    --s3-bucket ${TESTING_ARTIFACT_BUCKET}
+                    --region ${DEV_REGION}
+                    --s3-bucket ${DEV_ARTIFACT_BUCKET}
                     --no-fail-on-empty-changeset
-                    --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+                    --role-arn ${DEV_CLOUDFORMATION_EXECUTION_ROLE}
