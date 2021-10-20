@@ -40,12 +40,6 @@ Parameters:
       - Active
       - PassThrough
 
-  RawPyLayerArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: "ARN of RawPy layer"
-    Default: "/layers/aws-lambda-layer-python-rawpy-tom/RawPy38Arn"
-
-
 
 Mappings:
   XRaySDKEnabled:
