@@ -461,7 +461,6 @@ Resources:
       MemorySize: 512
       Timeout: 30
       Layers:
-        - !Ref RawPyLayerArn
         - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'

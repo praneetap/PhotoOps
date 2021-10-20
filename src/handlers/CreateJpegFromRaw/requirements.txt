@@ -4,3 +4,4 @@ imageio
 mypy_boto3_s3
 mypy_boto3_sts
 pillow
+rawpy
