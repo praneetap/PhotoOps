@@ -72,6 +72,25 @@ Globals:
 
 
 Resources:
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: src/common
+      RetentionPolicy: Delete
+      CompatibleRuntimes:
+        - python3.8
+    Metadata:
+      BuildMethod: makefile
+
+  CommonLayerArnSsmParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub /layers/${AWS::StackName}/CommonLayerArn
+      Type: String
+      Value: !Ref RawPy38Layer
+      Description: ARN of PhotoOps Common Lambda layer for Python 3.8
+
+
   IngestS3Event:
     Type: AWS::Serverless::Function
     Properties:
@@ -81,6 +100,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt IngestS3EventDlqQueue.Arn
@@ -112,6 +133,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 30
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           CROSS_ACCOUNT_IAM_ROLE_ARN: !GetAtt PhotoOpsCrossAccountIamRole.Arn
@@ -165,6 +188,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifCameraDataDlqQueue.Arn
@@ -203,6 +228,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifLensDataDlqQueue.Arn
@@ -241,6 +268,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifImageDataDlqQueue.Arn
@@ -279,6 +308,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetExifLocationDataDlqQueue.Arn
@@ -317,6 +348,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GetFileDataDlqQueue.Arn
@@ -355,6 +388,8 @@ Resources:
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           DDB_TABLE_NAME: !Ref DynamoDBTable
@@ -425,6 +460,9 @@ Resources:
       Runtime: python3.8
       MemorySize: 512
       Timeout: 30
+      Layers:
+        - !Ref RawPyLayerArn
+        - !Ref CommonLayer
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt CreateJpegFromRawDlqQueue.Arn
@@ -445,8 +483,6 @@ Resources:
             Action:
               - s3:PutObject
             Resource: !Sub "${PhotoOpsBucket.Arn}/*"
-      Layers:
-        - !Ref RawPyLayerArn
       EventInvokeConfig:
         DestinationConfig:
           OnSuccess:

@@ -1,3 +1,1 @@
--e src/common/
-
 aws_lambda_powertools
