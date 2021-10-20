@@ -53,6 +53,13 @@ PhotoOpsAI central application platform
 * [Docker installed](https://www.docker.com/community-edition)
 * [SAM CLI installed](https://github.com/awslabs/aws-sam-cli)
 
+## Managing Mock Data & Schemas
+
+1) Obtain or write sample data.
+2) Use Python `genson` to generate a schema. Adjust as necessary.
+3) Use `json2models -s nested --datetime --max-strings-literals 0 -f dataclasses -m ClassName <json_file>` to generate dataclass.
+4) Add test to `tests/unit/data` to ensure data, schema, and dataclass.
+
 ## Setup process
 
 ### Local development
