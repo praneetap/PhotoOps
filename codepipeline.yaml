@@ -537,6 +537,27 @@ Resources:
                   - "s3:PutObject"
                 Resource:
                   - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
+        - PolicyName: ListTestImages
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:List*"
+                Resource:
+                  - !Join ['', ["arn:aws:s3:::", !Select [0, !Split ['/', !Ref TestPhotoImageBucketPath]]]]
+                  - !Sub "arn:aws:s3:::${TestPhotoImageBucketPath}/*"
+        - PolicyName: GetTestImages
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:GetObject"
+                  - "s3:GetObjectVersion"
+                  - "s3:PutObject"
+                Resource:
+                  - !Sub "arn:aws:s3:::${TestPhotoImageBucketPath}/*"
         # Used by SAM validate
         - PolicyName: ListIamPolicies
           PolicyDocument:
