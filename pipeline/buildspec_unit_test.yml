@@ -7,3 +7,9 @@ phases:
     commands:
       # trigger the unit tests here
       - echo 'Running unit tests'
+      - pip install --upgrade pip
+      - pip install pipenv
+      - pipenv install
+      - pipenv run make validate
+      - pipenv run make unit-test
+
