@@ -533,6 +533,16 @@ Resources:
                   - "s3:PutObject"
                 Resource:
                   - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
+        # Used by SAM validate
+        - PolicyName: ListIamPolicies
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "iam:ListPolicies"
+                Resource:
+                  - "*"
         - PolicyName: AssumeStagePipExecutionRoles
           PolicyDocument:
             Version: "2012-10-17"
