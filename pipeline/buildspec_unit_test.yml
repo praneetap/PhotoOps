@@ -11,6 +11,7 @@ phases:
       - pip install pipenv
       - pipenv install --dev
       - pipenv run make validate
+      - aws s3 sync s3://${TEST_PHOTO_IMAGE_BUCKET_PATH} data/images
       # Need to handle image availability
-      #- pipenv run make unit-test
+      - pipenv run make unit-test
 

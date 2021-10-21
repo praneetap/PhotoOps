@@ -88,6 +88,10 @@ Parameters:
   FeatureGitBranch:
     Type: String
     Default: ""
+  TestPhotoImageBucketPath:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/PhotoOpsAI-TestImages-prime/BucketPath"
+
 
 Conditions:
   IsMainBranchPipeline: !Equals [!Ref FeatureGitBranch, ""]
@@ -565,6 +569,9 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_MEDIUM
         Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        EnvironmentVariables:
+          - Name: TEST_PHOTO_IMAGE_BUCKET_PATH
+            Value: !Ref TestPhotoImageBucketPath
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
