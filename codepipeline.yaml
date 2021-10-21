@@ -125,6 +125,7 @@ Resources:
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
+      Name: ${AWS::StackName}
       ArtifactStore:
         Location: !Ref PipelineArtifactsBucket
         Type: S3
