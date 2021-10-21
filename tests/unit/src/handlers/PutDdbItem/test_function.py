@@ -34,12 +34,17 @@ def aws_credentials():
     os.environ['AWS_SECURITY_TOKEN'] = 'testing'
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
+@moto.mock_sts
+@pytest.fixture()
+def session(aws_credentials):
+    '''AWS Session client'''
+    return boto3.Session()
 
 @pytest.fixture()
-def DDB_TABLE(aws_credentials):
+def DDB_TABLE(session):
     '''DDB client'''
     with moto.mock_dynamodb2():
-        boto3.client('dynamodb').create_table(
+        session.client('dynamodb').create_table(
             TableName='TestTable',
             KeySchema=[
                 {
@@ -62,7 +67,7 @@ def DDB_TABLE(aws_credentials):
                 }
             ]
         )
-        yield boto3.resource('dynamodb').Table('TestTable')
+        yield session.resource('dynamodb').Table('TestTable')
 
 
 ### Tests

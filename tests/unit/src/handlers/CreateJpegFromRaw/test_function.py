@@ -40,18 +40,18 @@ def aws_credentials() -> None:
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
 
+@moto.mock_sts
 @pytest.fixture()
-def STS_CLIENT(aws_credentials):
-    '''S3 client'''
-    with moto.mock_s3():
-        yield boto3.client('sts')
+def session(aws_credentials):
+    '''AWS Session client'''
+    return boto3.Session()
 
 
 @pytest.fixture()
-def S3_CLIENT(aws_credentials):
+def S3_CLIENT(session):
     '''S3 client'''
     with moto.mock_s3():
-        yield boto3.client('s3')
+        yield session.client('s3')
 
 
 ### Images
@@ -134,7 +134,7 @@ def test_validate_expected_response(expected_response: dict, response_schema: di
 
 
 ### Tests
-def test_handler(event: dict, expected_response: dict, image, S3_CLIENT, STS_CLIENT, mocker):
+def test_handler(event: dict, expected_response: dict, image, S3_CLIENT, mocker):
     '''Call handler'''
     mocker.patch(
         'src.handlers.CreateJpegFromRaw.function._get_cross_account_s3_client',
