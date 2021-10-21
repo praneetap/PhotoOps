@@ -39,27 +39,6 @@ Parameters:
   SamTemplate:
     Type: String
     Default: "template.yaml"
-  TestingRegion:
-    Type: String
-    Default: "us-east-1"
-  TestingStackName:
-    Type: String
-    Default: "PhotoOps-prime"
-  TestingPipelineExecutionRole:
-    Type: String
-    Default: "arn:aws:iam::346402060170:role/aws-sam-cli-managed-cicd-pip-PipelineExecutionRole-L1E1I212U8JZ"
-  TestingCloudFormationExecutionRole:
-    Type: String
-    Default: "arn:aws:iam::346402060170:role/aws-sam-cli-managed-cicd-CloudFormationExecutionR-118V0MV8LVYJ1"
-  TestingArtifactBucket:
-    Type: String
-    Default: "aws-sam-cli-managed-cicd-pipeline-artifactsbucket-1eyb5h1dit7ta"
-  TestingImageRepository:
-    Type: String
-    # If there are functions with "Image" PackageType in your template,
-    # Update the line below with image repository URL and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
-    # prod "sam package" and "sam deploy" commands in buildspec files (in pipeline/).
-    Default: ""
   DevRegion:
     Type: String
     Default: "us-east-1"
@@ -587,17 +566,17 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
-          - Name: TESTING_REGION
-            Value: !Ref TestingRegion
-          - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestingPipelineExecutionRole
-          - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref TestingCloudFormationExecutionRole
-          - Name: TESTING_ARTIFACT_BUCKET
-            Value: !Ref TestingArtifactBucket
-          - Name: TESTING_IMAGE_REPOSITORY
-            Value: !Ref TestingImageRepository
-          - Name: FEATURE_BRANCH_NAME
+          - Name: DEV_REGION
+            Value: !Ref DevRegion
+          - Name: DEV_PIPELINE_EXECUTION_ROLE
+            Value: !Ref DevPipelineExecutionRole
+          - Name: DEV_CLOUDFORMATION_EXECUTION_ROLE
+            Value: !Ref DevCloudFormationExecutionRole
+          - Name: DEV_ARTIFACT_BUCKET
+            Value: !Ref DevArtifactBucket
+          - Name: DEV_IMAGE_REPOSITORY
+            Value: !Ref DevImageRepository
+          - Name: DEV_BRANCH_NAME
             Value: !Ref FeatureGitBranch
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
@@ -618,26 +597,18 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
-          - Name: TESTING_REGION
-            Value: !Ref TestingRegion
           - Name: DEV_REGION
             Value: !Ref DevRegion
           - Name: PROD_REGION
             Value: !Ref ProdRegion
-          - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestingPipelineExecutionRole
           - Name: DEV_PIPELINE_EXECUTION_ROLE
             Value: !Ref DevPipelineExecutionRole
           - Name: PROD_PIPELINE_EXECUTION_ROLE
             Value: !Ref ProdPipelineExecutionRole
-          - Name: TESTING_ARTIFACT_BUCKET
-            Value: !Ref TestingArtifactBucket
           - Name: DEV_ARTIFACT_BUCKET
             Value: !Ref DevArtifactBucket
           - Name: PROD_ARTIFACT_BUCKET
             Value: !Ref ProdArtifactBucket
-          - Name: TESTING_IMAGE_REPOSITORY
-            Value: !Ref TestingImageRepository
           - Name: DEV_IMAGE_REPOSITORY
             Value: !Ref DevImageRepository
           - Name: PROD_IMAGE_REPOSITORY
