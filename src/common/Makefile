@@ -1,3 +1,4 @@
 build-CommonLayer:
 	python3 ./setup.py build
-	python3 ./setup.py install --prefix $(ARTIFACTS_DIR)
+	mkdir $(ARTIFACTS_DIR)/python
+	pip3 wheel  -e . -w $(ARTIFACTS_DIR)/python
