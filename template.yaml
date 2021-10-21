@@ -70,6 +70,7 @@ Resources:
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
+      LayerName: !Sub "${AWS::StackName}-${ServiceEnv}-CommonLayer"
       ContentUri: src/common
       RetentionPolicy: Delete
       CompatibleRuntimes:
