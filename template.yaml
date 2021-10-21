@@ -40,12 +40,6 @@ Parameters:
       - Active
       - PassThrough
 
-  RawPyLayerArn:
-    Type: AWS::SSM::Parameter::Value<String>
-    Description: "ARN of RawPy layer"
-    Default: "/layers/aws-lambda-layer-python-rawpy-tom/RawPy38Arn"
-
-
 
 Mappings:
   XRaySDKEnabled:
@@ -87,7 +81,7 @@ Resources:
     Properties:
       Name: !Sub /layers/${AWS::StackName}/CommonLayerArn
       Type: String
-      Value: !Ref RawPy38Layer
+      Value: !Ref CommonLayer
       Description: ARN of PhotoOps Common Lambda layer for Python 3.8
 
 
