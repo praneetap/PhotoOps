@@ -68,7 +68,7 @@ Parameters:
     Default: "PhotoOps-prime"
   DevPipelineExecutionRole:
     Type: String
-    Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-1VSDDLWBVSQHF"
+    Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-1AEX2PNG0E9Y0"
   DevCloudFormationExecutionRole:
     Type: String
     Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-p-CloudFormationExecutionR-TO9NEONUGHP5"
@@ -89,13 +89,13 @@ Parameters:
     Default: "PhotoOps-prime"
   ProdPipelineExecutionRole:
     Type: String
-    Default: "arn:aws:iam::641494176294:role/aws-sam-cli-managed-prod-pip-PipelineExecutionRole-9MQ2KGUOFLB5"
+    Default: "arn:aws:iam::641494176294:role/aws-sam-cli-managed-prod-pip-PipelineExecutionRole-BGAA6NDIWB6B"
   ProdCloudFormationExecutionRole:
     Type: String
     Default: "arn:aws:iam::641494176294:role/aws-sam-cli-managed-prod-CloudFormationExecutionR-5BO63A8DH76T"
   ProdArtifactBucket:
     Type: String
-    Default: "aws-sam-cli-managed-dev-pipeline-artifactsbucket-1hpjuwnjjfe27"
+    Default: "aws-sam-cli-managed-prod-pipeline-artifactsbucket-1dt5yn3hovxd5"
   ProdImageRepository:
     Type: String
     # If there are functions with "Image" PackageType in your template,
