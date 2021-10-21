@@ -66,6 +66,7 @@ Globals:
 
 
 Resources:
+  # Layer also brings in aws-lambda-powertools and boto3
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:

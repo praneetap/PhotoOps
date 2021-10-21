@@ -18,6 +18,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'aws_lambda_powertools',
+        'boto3',
         'inflection',
         'json2python-models',
         'dataclasses_json'
