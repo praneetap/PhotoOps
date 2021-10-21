@@ -8,6 +8,7 @@ dev: flake lint test
 # Verifications to run before sending a pull request
 pr: init dev
 
+SAM_TEMPLATE ?= template.yaml
 ENV ?= ${USER}
 STACKNAME = $(shell basename ${CURDIR})-$(ENV)
 AWS_REGION ?= $(shell aws configure get region)
@@ -18,7 +19,7 @@ check_profile:
 
 build:
 	$(info Building application)
-	sam build --use-container
+	sam build --use-container --parallel --template ${SAM_TEMPLATE}
 
 validate:
 	$(info linting SAM template)

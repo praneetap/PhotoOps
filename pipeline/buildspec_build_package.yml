@@ -11,7 +11,7 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - sam build --use-container --parallel --template ${SAM_TEMPLATE}
+      - make build
       - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} test-package
       - sam package --s3-bucket ${DEV_ARTIFACT_BUCKET}
                     --region ${DEV_REGION}
