@@ -553,7 +553,7 @@ Resources:
   LogGroupForEventsPolicy:
     Type: AWS::Logs::ResourcePolicy
     Properties:
-      PolicyName: EventBridgeToCWLogsPolicy
+      PolicyName: !Sub "${AWS::StackName}-${ServiceEnv}-EventBridgeToCWLogsPolicy"
       PolicyDocument: !Sub
         - >
           {
