@@ -10,7 +10,7 @@ phases:
       - pip install --upgrade pip
       - pip install pipenv
       - pipenv install --dev
-      - pipenv run make validate
+      #- pipenv run make validate
       # Need to handle image availability
       #- pipenv run make unit-test
 
