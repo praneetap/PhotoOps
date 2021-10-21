@@ -109,18 +109,18 @@ def aws_credentials():
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
 
-@moto.mock_s3
-@pytest.fixture()
-def s3_client(aws_credentials):
-    '''S3 client fixture'''
-    return boto3.client('s3')
-
-
 @moto.mock_sts
 @pytest.fixture()
-def sts_client(aws_credentials):
+def session(aws_credentials):
+    '''AWS Session fixture'''
+    return boto3.Session()
+
+
+@moto.mock_s3
+@pytest.fixture()
+def s3_client(session):
     '''S3 client fixture'''
-    return boto3.client('sts')
+    return session.client('s3')
 
 
 # Data validation
@@ -146,7 +146,7 @@ def test_validate_expected_data(expected_response, data_schema):
 
 ### Tests
 @moto.mock_s3
-def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_object_key, sts_client, mocker):
+def test_handler(event, image, expected_response, s3_client, s3_bucket_name, s3_object_key, mocker):
     '''Call handler'''
     mocker.patch(
         'src.handlers.GetExifData.function._get_cross_account_s3_client',
