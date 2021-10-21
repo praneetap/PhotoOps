@@ -13,7 +13,7 @@ phases:
       - pipenv run make validate
       - echo ${TEST_PHOTO_IMAGE_BUCKET_PATH}
       - aws sts get-caller-identity
-      - aws s3 sync s3://${TEST_PHOTO_IMAGE_BUCKET_PATH} data/images
+      - aws s3 sync --no-progress s3://${TEST_PHOTO_IMAGE_BUCKET_PATH} data/images
       # Need to handle image availability
       - pipenv run make unit-test
 
