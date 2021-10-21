@@ -46,7 +46,7 @@ parameters:
 
 delete:
 	$(info Delete stack)
-	@aws cloudformation delete-stack --stack-name $(STACKNAME)
+	@sam delete --stack-name $(STACKNAME)
 
 function:
 	$(info creating function: ${F})
