@@ -109,7 +109,7 @@ Resources:
 
   CodeStarConnectionArnSsmParam:
     Condition: CreateConnection
-    Type: AWS::SSM::Paramater
+    Type: AWS::SSM::Parameter
     Properties:
       Type: String
       Description: "ARN of CodeStar connection"
