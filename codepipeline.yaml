@@ -189,7 +189,6 @@ Resources:
                 - Name: !Sub ${AWS::StackName}ChangeSet
               RunOrder: 2
 
-        # Uncomment and modify the following step for running the unit-tests
         - Name: UnitTest
           Actions:
             - Name: UnitTest
@@ -262,18 +261,22 @@ Resources:
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
                 RunOrder: 1
-              # Uncomment the following step for running the integration tests
-              # - Name: IntegrationTest
-              #   ActionTypeId:
-              #     Category: Build
-              #     Owner: AWS
-              #     Provider: CodeBuild
-              #     Version: "1"
-              #   Configuration:
-              #     ProjectName: !Ref CodeBuildProjectIntegrationTest
-              #   InputArtifacts:
-              #     - Name: SourceCodeAsZip
-              #   RunOrder: 2
+
+              - Name: IntegrationTest
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Provider: CodeBuild
+                  Version: "1"
+                Configuration:
+                  ProjectName: !Ref CodeBuildProjectIntegrationTest
+                  EnvironmentVariables: !Sub |
+                    [
+                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${DevPipelineExecutionRole}"}
+                    ]
+                InputArtifacts:
+                  - Name: SourceCodeAsZip
+                RunOrder: 2
           - !Ref AWS::NoValue
 
         - !If
@@ -439,7 +442,6 @@ Resources:
                   - "codebuild:StartBuild"
                   - "codebuild:BatchGetBuilds"
                 Resource:
-                  # Uncomment the line below to enable the unit-tests
                   - !GetAtt CodeBuildProjectUnitTest.Arn
                   - !If
                     - IsFeatureBranchPipeline
@@ -449,11 +451,10 @@ Resources:
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectBuildAndPackage.Arn
                     - !Ref AWS::NoValue
-                  # Uncomment the following step for running the integration tests
-                  # - !If
-                  #   - IsMainBranchPipeline
-                  #   - !GetAtt CodeBuildProjectIntegrationTest.Arn
-                  #   - !Ref AWS::NoValue
+                  - !If
+                    - IsMainBranchPipeline
+                    - !GetAtt CodeBuildProjectIntegrationTest.Arn
+                    - !Ref AWS::NoValue
                   - !If
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectDeploy.Arn
@@ -580,7 +581,6 @@ Resources:
                   StringEquals:
                     aws:ResourceTag/Role: pipeline-execution-role
 
-  # Uncomment and modify the following step for running the unit-tests
   CodeBuildProjectUnitTest:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -664,21 +664,23 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: pipeline/buildspec_build_package.yml
 
-  # Uncomment and modify the following step for running the integration tests
-  # CodeBuildProjectIntegrationTest:
-  #   Condition: IsMainBranchPipeline
-  #   Type: AWS::CodeBuild::Project
-  #   Properties:
-  #     Artifacts:
-  #       Type: CODEPIPELINE
-  #     Environment:
-  #       Type: LINUX_CONTAINER
-  #       ComputeType: BUILD_GENERAL1_SMALL
-  #       Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
-  #     ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-  #     Source:
-  #       Type: CODEPIPELINE
-  #       BuildSpec: pipeline/buildspec_integration_test.yml
+  CodeBuildProjectIntegrationTest:
+    Condition: IsMainBranchPipeline
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        EnvironmentVariables:
+          - Name: TEST_PHOTO_IMAGE_BUCKET_PATH
+            Value: !Ref TestPhotoImageBucketPath
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: pipeline/buildspec_integration_test.yml
 
   CodeBuildProjectDeploy:
     Condition: IsMainBranchPipeline
