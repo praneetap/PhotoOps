@@ -169,7 +169,7 @@ Resources:
           Actions:
             - Name: UnitTest
               ActionTypeId:
-                Category: Build
+                Category: Test
                 Owner: AWS
                 Provider: CodeBuild
                 Version: "1"
@@ -240,7 +240,7 @@ Resources:
 
               - Name: IntegrationTest
                 ActionTypeId:
-                  Category: Build
+                  Category: Test
                   Owner: AWS
                   Provider: CodeBuild
                   Version: "1"
