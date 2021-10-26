@@ -39,6 +39,12 @@ Parameters:
   DevRegion:
     Type: String
     Default: "us-east-1"
+  BuildCloudFormationExecutionRole:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/cicd/tom/CfnExecutionRoleArn"
+  BuildPipelineExecutionRole:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/cicd/tom/PipelineExecutionRoleArn"
   DevStackName:
     Type: String
     Default: "PhotoOps-prime"
@@ -115,6 +121,7 @@ Resources:
         - Name: Source
           Actions:
             - Name: SourceCodeRepo
+              RoleArn: !Ref BuildPipelineExecutionRole
               ActionTypeId:
                 Category: Source
                 Owner: AWS
@@ -137,7 +144,7 @@ Resources:
                 Version: "1"
               Configuration:
                 ActionMode: CHANGE_SET_REPLACE
-                RoleArn: !GetAtt PipelineStackCloudFormationExecutionRole.Arn
+                RoleArn: !Ref BuildCloudFormationExecutionRole
                 StackName: !Ref AWS::StackName
                 ChangeSetName: !Sub ${AWS::StackName}-ChangeSet
                 TemplatePath: SourceCodeAsZip::codepipeline.yaml
@@ -158,7 +165,7 @@ Resources:
                 Version: "1"
               Configuration:
                 ActionMode: CHANGE_SET_EXECUTE
-                RoleArn: !GetAtt PipelineStackCloudFormationExecutionRole.Arn
+                RoleArn: !Ref BuildCloudFormationExecutionRole
                 StackName: !Ref AWS::StackName
                 ChangeSetName: !Sub ${AWS::StackName}-ChangeSet
               OutputArtifacts:
@@ -363,6 +370,9 @@ Resources:
   CodePipelineExecutionRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: Role
+          Value: aws-sam-pipeline-codepipeline-execution-role
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -373,6 +383,17 @@ Resources:
               Service:
                 - codepipeline.amazonaws.com
       Policies:
+        - PolicyName: AssumeSharedPipelineExecutionRole
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Action:
+                  - sts:AssumeRole
+                Effect: Allow
+                Resource: !Ref BuildPipelineExecutionRole
+                Condition:
+                  StringEquals:
+                    aws:ResourceTag/Role: pipeline-execution-role
         - PolicyName: CodePipelineAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -443,25 +464,6 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
 
-  # PipelineStackCloudFormationExecutionRole is used for the pipeline to self mutate
-  PipelineStackCloudFormationExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          Action: "sts:AssumeRole"
-          Effect: Allow
-          Principal:
-            Service: cloudformation.amazonaws.com
-      Policies:
-        - PolicyName: GrantCloudFormationFullAccess
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: '*'
-                Resource: '*'
 
   #   ____          _      ____        _ _     _
   #  / ___|___   __| | ___| __ ) _   _(_| | __| |
