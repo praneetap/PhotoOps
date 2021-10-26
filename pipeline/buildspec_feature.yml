@@ -15,6 +15,7 @@ phases:
       - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} feature-deploy
       #- ENV=$make deploy
       - sam deploy --stack-name $(echo ${APP_NAME}-${APP_ENV_NAME} | tr '/' '-')
+                    --parameter-overrides ServiceEnv=$(echo ${APP_ENV_NAME} | tr '/' '-')
                     --capabilities CAPABILITY_NAMED_IAM
                     --region ${DEV_REGION}
                     --s3-bucket ${DEV_ARTIFACT_BUCKET}
