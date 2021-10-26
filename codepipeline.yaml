@@ -39,6 +39,9 @@ Parameters:
   DevRegion:
     Type: String
     Default: "us-east-1"
+  BuildPipelineArtifactsBucket:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/cicd/tom/ArtifactsBucket"
   BuildCloudFormationExecutionRole:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/cicd/tom/CfnExecutionRoleArn"
@@ -113,7 +116,7 @@ Resources:
     Properties:
       Name: !Ref AWS::StackName
       ArtifactStore:
-        Location: !Ref PipelineArtifactsBucket
+        Location: !Ref BuildPipelineArtifactsBucket
         Type: S3
       RoleArn: !GetAtt CodePipelineExecutionRole.Arn
       RestartExecutionOnUpdate: true
@@ -411,16 +414,14 @@ Resources:
                   - s3:GetBucketLocation
                 Effect: Allow
                 Resource:
-                  Fn::GetAtt:
-                    - PipelineArtifactsBucket
-                    - Arn
+                  - !Sub arn:aws:s3:::${BuildPipelineArtifactsBucket}
               - Action:
                   - "s3:GetObject"
                   - "s3:GetObjectVersion"
                   - "s3:PutObject"
                 Effect: Allow
                 Resource:
-                  Fn::Sub: ${PipelineArtifactsBucket.Arn}/*
+                  - !Sub arn:aws:s3:::${BuildPipelineArtifactsBucket}/*
 
         - PolicyName: CodePipelineCodeBuildAndCloudformationAccess
           PolicyDocument:
