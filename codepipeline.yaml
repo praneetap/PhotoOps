@@ -508,7 +508,7 @@ Resources:
                   - "s3:GetObjectVersion"
                   - "s3:PutObject"
                 Resource:
-                  - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
+                  - !Sub "arn:aws:s3:::${BuildPipelineArtifactsBucket}/*"
         - PolicyName: ListTestImages
           PolicyDocument:
             Version: "2012-10-17"
