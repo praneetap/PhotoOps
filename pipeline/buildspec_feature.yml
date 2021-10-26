@@ -11,13 +11,18 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - sam build --use-container --template ${SAM_TEMPLATE}
+      - make build
+      - sam package --output-template-file packaged-$(echo ${APP_ENV_NAME} | tr '/' '-').yaml
+                    --region ${DEV_REGION}
+                    --s3-bucket ${BUILD_ARTIFACT_BUCKET}
+                    --s3-prefix ${ARTIFACT_PREFIX_PATH}
       - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} feature-deploy
-      #- ENV=$make deploy
       - sam deploy --stack-name $(echo ${APP_NAME}-${APP_ENV_NAME} | tr '/' '-')
                     --parameter-overrides ServiceEnv=$(echo ${APP_ENV_NAME} | tr '/' '-')
                     --capabilities CAPABILITY_NAMED_IAM
                     --region ${DEV_REGION}
-                    --s3-bucket ${DEV_ARTIFACT_BUCKET}
+                    --s3-bucket ${BUILD_ARTIFACT_BUCKET}
+                    --s3-prefix ${ARTIFACT_PREFIX_PATH}
                     --no-fail-on-empty-changeset
                     --role-arn ${DEV_CLOUDFORMATION_EXECUTION_ROLE}
+                    --template packaged-$(echo ${APP_ENV_NAME} | tr '/' '-').yaml

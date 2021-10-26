@@ -586,14 +586,16 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
+          - Name: ARTIFACT_PREFIX_PATH
+            Value: !Sub "package/${AWS::StackName}"
           - Name: DEV_REGION
             Value: !Ref DevRegion
           - Name: DEV_PIPELINE_EXECUTION_ROLE
             Value: !Ref DevPipelineExecutionRole
           - Name: DEV_CLOUDFORMATION_EXECUTION_ROLE
             Value: !Ref DevCloudFormationExecutionRole
-          - Name: DEV_ARTIFACT_BUCKET
-            Value: !Ref DevArtifactBucket
+          - Name: BUILD_ARTIFACT_BUCKET
+            Value: !Ref BuildPipelineArtifactsBucket
           - Name: DEV_IMAGE_REPOSITORY
             Value: !Ref DevImageRepository
           - Name: APP_NAME
