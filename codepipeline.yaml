@@ -27,6 +27,15 @@ Description: >
 
 
 Parameters:
+  AppName:
+    Type: String
+    Default: "PhotoOps"
+  DevAppEnv:
+    Type: String
+    Default: "prime"
+  ProdAppEnv:
+    Type: String
+    Default: "prime"
   FullRepositoryId:
     Type: String
     Default: "ServerlessOpsIO/PhotoOps"
@@ -48,9 +57,6 @@ Parameters:
   BuildPipelineExecutionRole:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/cicd/tom/PipelineExecutionRoleArn"
-  DevStackName:
-    Type: String
-    Default: "PhotoOps-prime"
   DevPipelineExecutionRole:
     Type: String
     Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-1AEX2PNG0E9Y0"
@@ -69,9 +75,6 @@ Parameters:
   ProdRegion:
     Type: String
     Default: "us-east-1"
-  ProdStackName:
-    Type: String
-    Default: "PhotoOps-prime"
   ProdPipelineExecutionRole:
     Type: String
     Default: "arn:aws:iam::641494176294:role/aws-sam-cli-managed-prod-pip-PipelineExecutionRole-BGAA6NDIWB6B"
@@ -238,7 +241,7 @@ Resources:
                     [
                       {"name": "ENV_TEMPLATE", "value": "packaged-dev.yaml"},
                       {"name": "ENV_REGION", "value": "${DevRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${DevStackName}"},
+                      {"name": "ENV_STACK_NAME", "value": "${AppName}-${DevAppEnv}"},
                       {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${DevPipelineExecutionRole}"},
                       {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${DevCloudFormationExecutionRole}"},
                       {"name": "ENV_BUCKET", "value": "${DevArtifactBucket}"},
@@ -290,7 +293,7 @@ Resources:
                     [
                       {"name": "ENV_TEMPLATE", "value": "packaged-prod.yaml"},
                       {"name": "ENV_REGION", "value": "${ProdRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${ProdStackName}"},
+                      {"name": "ENV_STACK_NAME", "value": "${AppName}-${ProdAppEnv}"},
                       {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
                       {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionRole}"},
                       {"name": "ENV_BUCKET", "value": "${ProdArtifactBucket}"},
@@ -593,7 +596,9 @@ Resources:
             Value: !Ref DevArtifactBucket
           - Name: DEV_IMAGE_REPOSITORY
             Value: !Ref DevImageRepository
-          - Name: DEV_BRANCH_NAME
+          - Name: APP_NAME
+            Value: !Ref AppName
+          - Name: APP_ENV_NAME
             Value: !Ref FeatureGitBranch
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:

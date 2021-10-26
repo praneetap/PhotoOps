@@ -13,7 +13,8 @@ phases:
     commands:
       - sam build --use-container --template ${SAM_TEMPLATE}
       - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} feature-deploy
-      - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
+      #- ENV=$make deploy
+      - sam deploy --stack-name $(echo ${APP_NAME}-${APP_ENV_NAME} | tr '/' '-')
                     --capabilities CAPABILITY_IAM
                     --region ${DEV_REGION}
                     --s3-bucket ${DEV_ARTIFACT_BUCKET}
