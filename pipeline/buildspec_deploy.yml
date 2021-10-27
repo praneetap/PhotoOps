@@ -8,11 +8,13 @@ phases:
       - pip install --upgrade awscli aws-sam-cli
   build:
     commands:
-      - . ./assume-role.sh ${ENV_PIPELINE_EXECUTION_ROLE} deploy
-      - sam deploy --stack-name ${ENV_STACK_NAME}
-                    --template ${ENV_TEMPLATE}
+      - sam deploy --stack-name $(echo ${STACK_NAME} | tr '/' '-')
+                    --template packaged.yaml
+                    --parameter-overrides ServiceEnv=$(echo ${APP_ENV_NAME} | tr '/' '-')
                     --capabilities CAPABILITY_NAMED_IAM
-                    --region ${ENV_REGION}
-                    --s3-bucket ${ENV_BUCKET}
+                    --region ${REGION}
+                    --s3-bucket ${BUILD_ARTIFACT_BUCKET}
+                    --s3-prefix ${BUILD_ARTIFACT_PREFIX_PATH}
                     --no-fail-on-empty-changeset
-                    --role-arn ${ENV_CLOUDFORMATION_EXECUTION_ROLE}
+                    --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}
+

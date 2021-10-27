@@ -45,6 +45,9 @@ Parameters:
   SamTemplate:
     Type: String
     Default: "template.yaml"
+  Region:
+    Type: String
+    Default: "us-east-1"
   DevRegion:
     Type: String
     Default: "us-east-1"
@@ -121,13 +124,12 @@ Resources:
       ArtifactStore:
         Location: !Ref BuildPipelineArtifactsBucket
         Type: S3
-      RoleArn: !GetAtt CodePipelineExecutionRole.Arn
+      RoleArn: !Ref BuildPipelineExecutionRole
       RestartExecutionOnUpdate: true
       Stages:
         - Name: Source
           Actions:
             - Name: SourceCodeRepo
-              RoleArn: !Ref BuildPipelineExecutionRole
               ActionTypeId:
                 Category: Source
                 Owner: AWS
@@ -191,37 +193,51 @@ Resources:
               InputArtifacts:
                 - Name: SourceCodeAsZip
 
-        - !If
-          - IsFeatureBranchPipeline
-          - Name: BuildAndDeployFeatureStack
-            Actions:
-              - Name: CodeBuild
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectBuildAndDeployFeature
-                InputArtifacts:
-                  - Name: SourceCodeAsZip
-          - !Ref AWS::NoValue
+
+        - Name: BuildAndPackage
+          Actions:
+            - Name: CodeBuild
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName: !Ref CodeBuildProjectBuildAndPackage
+                EnvironmentVariables: !Sub |
+                  [
+                    {"name": "REGION", "value": "${Region}"},
+                    {"name": "BUILD_ARTIFACT_BUCKET", "value": "${BuildPipelineArtifactsBucket}"},
+                    {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"}
+                  ]
+              InputArtifacts:
+                - Name: SourceCodeAsZip
+              OutputArtifacts:
+                - Name: BuildArtifactAsZip
 
         - !If
-          - IsMainBranchPipeline
-          - Name: BuildAndPackage
+          - IsFeatureBranchPipeline
+          - Name: DeployFeature
             Actions:
               - Name: CodeBuild
+                RoleArn: !Ref DevPipelineExecutionRole
                 ActionTypeId:
                   Category: Build
                   Owner: AWS
                   Provider: CodeBuild
                   Version: "1"
                 Configuration:
-                  ProjectName: !Ref CodeBuildProjectBuildAndPackage
+                  ProjectName: !Ref CodeBuildProjectDeploy
+                  EnvironmentVariables: !Sub |
+                    [
+                      {"name": "REGION", "value": "${Region}"},
+                      {"name": "STACK_NAME", "value": "${AppName}-${FeatureGitBranch}"},
+                      {"name": "APP_ENV_NAME", "value": "${FeatureGitBranch}"},
+                      {"name": "CLOUDFORMATION_EXECUTION_ROLE", "value": "${DevCloudFormationExecutionRole}"},
+                      {"name": "BUILD_ARTIFACT_BUCKET", "value": "${BuildPipelineArtifactsBucket}"},
+                      {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"}
+                    ]
                 InputArtifacts:
-                  - Name: SourceCodeAsZip
-                OutputArtifacts:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
 
@@ -437,10 +453,6 @@ Resources:
                 Resource:
                   - !GetAtt CodeBuildProjectUnitTest.Arn
                   - !If
-                    - IsFeatureBranchPipeline
-                    - !GetAtt CodeBuildProjectBuildAndDeployFeature.Arn
-                    - !Ref AWS::NoValue
-                  - !If
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectBuildAndPackage.Arn
                     - !Ref AWS::NoValue
@@ -572,43 +584,7 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: pipeline/buildspec_unit_test.yml
 
-  CodeBuildProjectBuildAndDeployFeature:
-    Condition: IsFeatureBranchPipeline
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_MEDIUM
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
-        PrivilegedMode: true
-        EnvironmentVariables:
-          - Name: SAM_TEMPLATE
-            Value: !Ref SamTemplate
-          - Name: ARTIFACT_PREFIX_PATH
-            Value: !Sub "package/${AWS::StackName}"
-          - Name: DEV_REGION
-            Value: !Ref DevRegion
-          - Name: DEV_PIPELINE_EXECUTION_ROLE
-            Value: !Ref DevPipelineExecutionRole
-          - Name: DEV_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref DevCloudFormationExecutionRole
-          - Name: BUILD_ARTIFACT_BUCKET
-            Value: !Ref BuildPipelineArtifactsBucket
-          - Name: DEV_IMAGE_REPOSITORY
-            Value: !Ref DevImageRepository
-          - Name: APP_NAME
-            Value: !Ref AppName
-          - Name: APP_ENV_NAME
-            Value: !Ref FeatureGitBranch
-      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-      Source:
-        Type: CODEPIPELINE
-        BuildSpec: pipeline/buildspec_feature.yml
-
   CodeBuildProjectBuildAndPackage:
-    Condition: IsMainBranchPipeline
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:
@@ -618,25 +594,6 @@ Resources:
         ComputeType: BUILD_GENERAL1_MEDIUM
         Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
         PrivilegedMode: true
-        EnvironmentVariables:
-          - Name: SAM_TEMPLATE
-            Value: !Ref SamTemplate
-          - Name: DEV_REGION
-            Value: !Ref DevRegion
-          - Name: PROD_REGION
-            Value: !Ref ProdRegion
-          - Name: DEV_PIPELINE_EXECUTION_ROLE
-            Value: !Ref DevPipelineExecutionRole
-          - Name: PROD_PIPELINE_EXECUTION_ROLE
-            Value: !Ref ProdPipelineExecutionRole
-          - Name: DEV_ARTIFACT_BUCKET
-            Value: !Ref DevArtifactBucket
-          - Name: PROD_ARTIFACT_BUCKET
-            Value: !Ref ProdArtifactBucket
-          - Name: DEV_IMAGE_REPOSITORY
-            Value: !Ref DevImageRepository
-          - Name: PROD_IMAGE_REPOSITORY
-            Value: !Ref ProdImageRepository
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
@@ -661,7 +618,6 @@ Resources:
         BuildSpec: pipeline/buildspec_integration_test.yml
 
   CodeBuildProjectDeploy:
-    Condition: IsMainBranchPipeline
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:

@@ -12,17 +12,11 @@ phases:
   build:
     commands:
       - make build
-      - . ./assume-role.sh ${DEV_PIPELINE_EXECUTION_ROLE} test-package
-      - sam package --s3-bucket ${DEV_ARTIFACT_BUCKET}
-                    --region ${DEV_REGION}
-                    --output-template-file packaged-dev.yaml
-      - . ./assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
-      - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
-                    --region ${PROD_REGION}
-                    --output-template-file packaged-prod.yaml
+      - sam package --s3-bucket ${BUILD_ARTIFACT_BUCKET}
+                    --s3-prefix ${BUILD_ARTIFACT_PREFIX_PATH}
+                    --region ${REGION}
+                    --output-template-file packaged.yaml
 artifacts:
   files:
-    - packaged-dev.yaml
-    - packaged-prod.yaml
-    - assume-role.sh
+    - packaged.yaml
     - pipeline/*
