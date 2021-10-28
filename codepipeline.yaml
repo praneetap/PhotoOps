@@ -127,6 +127,9 @@ Resources:
       ArtifactStore:
         Location: !Ref BuildPipelineArtifactsBucket
         Type: S3
+        EncryptionKey:
+          Id: !Ref BuildPipelineArtifactsKmsKey
+          Type: KMS
       RoleArn: !Ref BuildPipelineExecutionRole
       RestartExecutionOnUpdate: true
       Stages:
