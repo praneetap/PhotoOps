@@ -229,10 +229,10 @@ Resources:
                 Configuration:
                   ActionMode: CHANGE_SET_REPLACE
                   RoleArn: !Ref DevCloudFormationExecutionRole
-                  StackName: !Sub "${AppName}-${FeatureGitBranch}"
-                  ChangeSetName: !Sub '${AppName}-${FeatureGitBranch}-ChangeSet'
+                  StackName: !Sub "${AppName}-FeatureGitBranch"
+                  ChangeSetName: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
                   TemplatePath: 'BuildArtifactAsZip::packaged.yaml'
-                  ParameterOverrides: !Sub '{ "ServiceEnv": "${FeatureGitBranch}" }'
+                  ParameterOverrides: !Sub '{ "ServiceEnv": "FeatureGitBranch" }'
                   Capabilities: CAPABILITY_NAMED_IAM
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -247,10 +247,10 @@ Resources:
                 Configuration:
                   ActionMode: CHANGE_SET_EXECUTE
                   RoleArn: !Ref DevCloudFormationExecutionRole
-                  StackName: !Sub "${AppName}-${FeatureGitBranch}"
-                  ChangeSetName: !Sub '${AppName}-${FeatureGitBranch}-ChangeSet'
+                  StackName: !Sub "${AppName}-FeatureGitBranch"
+                  ChangeSetName: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
                 OutputArtifacts:
-                  - Name: !Sub '${AppName}-${FeatureGitBranch}-ChangeSet'
+                  - Name: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
                 RoleArn: !Ref DevPipelineExecutionRole
           - !Ref AWS::NoValue
 
