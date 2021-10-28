@@ -15,6 +15,7 @@ phases:
       - sam package --s3-bucket ${BUILD_ARTIFACT_BUCKET}
                     --s3-prefix ${BUILD_ARTIFACT_PREFIX_PATH}
                     --region ${REGION}
+                    --kms-key-id ${BUILD_ARTIFACT_KMS_KEY}
                     --output-template-file packaged.yaml
 artifacts:
   files:

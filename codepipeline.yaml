@@ -54,6 +54,9 @@ Parameters:
   BuildPipelineArtifactsBucket:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/cicd/tom/ArtifactsBucket"
+  BuildPipelineArtifactsKmsKey:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/cicd/tom/ArtifactsBucketKmsKey"
   BuildCloudFormationExecutionRole:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/cicd/tom/CfnExecutionRoleArn"
@@ -208,7 +211,8 @@ Resources:
                   [
                     {"name": "REGION", "value": "${Region}"},
                     {"name": "BUILD_ARTIFACT_BUCKET", "value": "${BuildPipelineArtifactsBucket}"},
-                    {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"}
+                    {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"},
+                    {"name": "BUILD_ARTIFACT_KMS_KEY", "value": "${BuildPipelineArtifactsKmsKey}"}
                   ]
               InputArtifacts:
                 - Name: SourceCodeAsZip
