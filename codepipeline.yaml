@@ -402,12 +402,17 @@ Resources:
               Bool:
                 aws:SecureTransport: false
 
+###
+# End remove block
+###
+
+  # FIXME: add to shared resources as BuildCodePipelineExecutionRole
   CodePipelineExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       Tags:
         - Key: Role
-          Value: aws-sam-pipeline-codepipeline-execution-role
+          Value: codepipeline-execution-role
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -428,7 +433,7 @@ Resources:
                 Resource: !Ref BuildPipelineExecutionRole
                 Condition:
                   StringEquals:
-                    aws:ResourceTag/Role: pipeline-execution-role
+                    aws:ResourceTag/Role: codepipeline-execution-role
         - PolicyName: CodePipelineAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -504,7 +509,7 @@ Resources:
     Properties:
       Tags:
         - Key: Role
-          Value: aws-sam-pipeline-codebuild-service-role
+          Value: codebuild-service-role
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
