@@ -62,10 +62,10 @@ Parameters:
     Default: "/cicd/tom/PipelineExecutionRoleArn"
   DevPipelineExecutionRole:
     Type: String
-    Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-1AEX2PNG0E9Y0"
+    Default: "arn:aws:iam::355364402302:role/aws-codepipeline-cicd-resour-PipelineExecutionRole-BZZ9KLGJTB42"
   DevCloudFormationExecutionRole:
     Type: String
-    Default: "arn:aws:iam::355364402302:role/aws-sam-cli-managed-dev-p-CloudFormationExecutionR-TO9NEONUGHP5"
+    Default: "arn:aws:iam::355364402302:role/aws-codepipeline-cicd-res-CloudFormationExecutionR-1MR33J9WCUMXZ"
   DevArtifactBucket:
     Type: String
     Default: "aws-sam-cli-managed-dev-pipeline-artifactsbucket-1hpjuwnjjfe27"
