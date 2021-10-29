@@ -48,9 +48,6 @@ Parameters:
   Region:
     Type: String
     Default: "us-east-1"
-  DevRegion:
-    Type: String
-    Default: "us-east-1"
   BuildPipelineArtifactsBucket:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/cicd/tom/ArtifactsBucket"
@@ -78,9 +75,6 @@ Parameters:
     # Update the line below with image repository URL and add "--image-repository ${PROD_IMAGE_REPOSITORY}" to
     # prod "sam package" and "sam deploy" commands in buildspec files (in pipeline/).
     Default: ""
-  ProdRegion:
-    Type: String
-    Default: "us-east-1"
   ProdPipelineExecutionRole:
     Type: String
     Default: "arn:aws:iam::641494176294:role/aws-sam-cli-managed-prod-pip-PipelineExecutionRole-BGAA6NDIWB6B"
@@ -309,6 +303,7 @@ Resources:
           - Name: DeployDev
             Actions:
               - Name: DeployDev
+                RoleArn: !Ref DevPipelineExecutionRole
                 ActionTypeId:
                   Category: Build
                   Owner: AWS
@@ -318,13 +313,12 @@ Resources:
                   ProjectName: !Ref CodeBuildProjectDeploy
                   EnvironmentVariables: !Sub |
                     [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-dev.yaml"},
-                      {"name": "ENV_REGION", "value": "${DevRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${AppName}-${DevAppEnv}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${DevPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${DevCloudFormationExecutionRole}"},
-                      {"name": "ENV_BUCKET", "value": "${DevArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${DevImageRepository}"}
+                      {"name": "REGION", "value": "${Region}"},
+                      {"name": "STACK_NAME", "value": "${AppName}-${DevAppEnv}"},
+                      {"name": "APP_ENV_NAME", "value": "${DevAppEnv}"},
+                      {"name": "CLOUDFORMATION_EXECUTION_ROLE", "value": "${DevCloudFormationExecutionRole}"},
+                      {"name": "BUILD_ARTIFACT_BUCKET", "value": "${BuildPipelineArtifactsBucket}"},
+                      {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -360,6 +354,7 @@ Resources:
               #    Version: "1"
               #   RunOrder: 1
               - Name: DeployProd
+                RoleArn: !Ref ProdPipelineExecutionRole
                 ActionTypeId:
                   Category: Build
                   Owner: AWS
@@ -370,13 +365,12 @@ Resources:
                   ProjectName: !Ref CodeBuildProjectDeploy
                   EnvironmentVariables: !Sub |
                     [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-prod.yaml"},
-                      {"name": "ENV_REGION", "value": "${ProdRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${AppName}-${ProdAppEnv}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionRole}"},
-                      {"name": "ENV_BUCKET", "value": "${ProdArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
+                      {"name": "REGION", "value": "${Region}"},
+                      {"name": "STACK_NAME", "value": "${AppName}-${ProdAppEnv}"},
+                      {"name": "APP_ENV_NAME", "value": "${ProdAppEnv}"},
+                      {"name": "CLOUDFORMATION_EXECUTION_ROLE", "value": "${DevCloudFormationExecutionRole}"},
+                      {"name": "BUILD_ARTIFACT_BUCKET", "value": "${BuildPipelineArtifactsBucket}"},
+                      {"name": "BUILD_ARTIFACT_PREFIX_PATH", "value": "package/${AWS::StackName}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
