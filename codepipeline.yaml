@@ -236,14 +236,36 @@ Resources:
                 Configuration:
                   ActionMode: CHANGE_SET_REPLACE
                   RoleArn: !Ref DevCloudFormationExecutionRole
-                  StackName: !Sub "${AppName}-FeatureGitBranch"
-                  ChangeSetName: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
+                  StackName:
+                    'Fn::Transform':
+                      - Name: String
+                        Parameters:
+                          Operation: Regex
+                          InputString: !Sub "${AppName}-${FeatureGitBranch}"
+                          Match: '[/_]'
+                          Replace: '-'
+                  ChangeSetName:
+                    'Fn::Transform':
+                      - Name: String
+                        Parameters:
+                          Operation: Regex
+                          InputString: !Sub "${AppName}-${FeatureGitBranch}-ChangeSet"
+                          Match: '[/_]'
+                          Replace: '-'
                   TemplatePath: 'BuildArtifactAsZip::packaged.yaml'
-                  ParameterOverrides: !Sub '{ "ServiceEnv": "FeatureGitBranch" }'
+                  ParameterOverrides:
+                    'Fn::Transform':
+                      - Name: String
+                        Parameters:
+                          Operation: Regex
+                          InputString: !Sub '{ "ServiceEnv": "${FeatureGitBranch}" }'
+                          Match: '[/_]'
+                          Replace: '-'
                   Capabilities: CAPABILITY_NAMED_IAM
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
                 RoleArn: !Ref DevPipelineExecutionRole
+
               - Name: ExecuteChangeSet
                 RunOrder: 2
                 ActionTypeId:
@@ -254,10 +276,31 @@ Resources:
                 Configuration:
                   ActionMode: CHANGE_SET_EXECUTE
                   RoleArn: !Ref DevCloudFormationExecutionRole
-                  StackName: !Sub "${AppName}-FeatureGitBranch"
-                  ChangeSetName: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
+                  StackName:
+                    'Fn::Transform':
+                      - Name: String
+                        Parameters:
+                          Operation: Regex
+                          InputString: !Sub "${AppName}-${FeatureGitBranch}"
+                          Match: '[/_]'
+                          Replace: '-'
+                  ChangeSetName:
+                    'Fn::Transform':
+                      - Name: String
+                        Parameters:
+                          Operation: Regex
+                          InputString: !Sub "${AppName}-${FeatureGitBranch}-ChangeSet"
+                          Match: '[/_]'
+                          Replace: '-'
                 OutputArtifacts:
-                  - Name: !Sub '${AppName}-FeatureGitBranch-ChangeSet'
+                  - Name:
+                      'Fn::Transform':
+                        - Name: String
+                          Parameters:
+                            Operation: Regex
+                            InputString: !Sub "${AppName}-${FeatureGitBranch}-ChangeSet"
+                            Match: '[/_]'
+                            Replace: '-'
                 RoleArn: !Ref DevPipelineExecutionRole
           - !Ref AWS::NoValue
 
